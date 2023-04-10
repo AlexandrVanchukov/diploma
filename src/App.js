@@ -1,12 +1,15 @@
 import React, {useEffect, useState} from "react";
 import MultiChoiceDropdown from './Components/MultiChoiceDropdown';
-import ScheduleTable from "./Components/scheduleTable";
+import ScheduleTable from "./Components/Schedule Table/scheduleTable";
 import Menu from "./Components/menu";
 function App() {
 
   const options = ['Option 1', 'Option 2', 'Option 3'];
   const firstMonday='2023-02-06';
-    setInterval(()=>show_lesson(),10000);
+  //let lessons = [];
+  const [lessons,SetLessons] = useState([]);
+//setInterval(()=>show_lesson(),5000);
+    show_lesson();
     function show_lesson(){
         let xhr = new XMLHttpRequest();
         xhr.open("POST","https://sql.lavro.ru/call.php");
@@ -36,12 +39,13 @@ function App() {
                 alert("Произошла ошибка при обращении к базе данных");
             }
             else{
-                console.log(resp.RESULTS[0][0].error);
                 if(resp.RESULTS[0][0].error){
                     if(resp.RESULTS[0][0].error=="You should choose one of the filters"){
                         alert(resp.RESULTS[0][0].rus_error);
                     }
                 }
+                SetLessons(resp.RESULTS[0]);
+                console.log(lessons);
             }
 
         }
@@ -58,11 +62,11 @@ function App() {
         <div style={{minWidth: "300px", display: "inline-block"}}>
             <Menu/>
         </div>
-        <div style={{width: "auto", display: "inline-block"}}>
+        <div style={{display: "inline-block"}}>
             <div>
             <MultiChoiceDropdown options={options} onSelect={handleOptionSelect} />
             </div>
-            <ScheduleTable/>
+            <ScheduleTable lessons={lessons}/>
         </div>
     </div>
   );

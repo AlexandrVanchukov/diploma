@@ -1,7 +1,37 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import classes from './ScheduleTable.module.css';
+import {renderToStaticMarkup} from "react-dom/server";
+import LessonCell from "./Lesson_cell";
 
-const ScheduleTable = () => {
+const ScheduleTable = (props) => {
+    const [l,SetL] = ([]);
+    function cell_info(day, num_l){
+        let result = [];
+        for (let i= 0; i < props.lessons.length; i++){
+            if (props.lessons[i].dayofweek-1 === day && props.lessons[i].num_lesson === num_l)
+            {
+                if(result.some(o => o.id_lesson === props.lessons[i].id_lesson)){
+                    const lesson = result.find(lesson => lesson.id_lesson === props.lessons[i].id_lesson)
+                    result.pop();
+                    if (lesson.name_group.includes(props.lessons[i].name_group)){
+                        result.push(lesson);
+                    }
+                    else {
+                        lesson.name_group = lesson.name_group + "," + props.lessons[i].name_group;
+                        result.push(lesson);
+                    }
+                }
+                else {
+                    result.push(props.lessons[i]);
+                }
+            }
+        }
+        return result;
+    }
+    console.log(cell_info(2,6));
+    console.log(cell_info(4,6));
+    console.log(cell_info(4,7));
+    console.log(cell_info(5,7));
     return (
         <div>
             <table className={classes.schedule}>
@@ -32,7 +62,10 @@ const ScheduleTable = () => {
                     <td>Row 2, Column 2</td>
                     <td>Row 2, Column 3</td>
                     <td>Row 2, Column 4</td>
-                    <td>Row 2, Column 5</td>
+                    <td>Row 2, Column 5
+                        {cell_info(5,2).map((l,index) =>
+                            <LessonCell lesson={l} key={index}/>
+                        )}</td>
                     <td>Row 2, Column 6</td>
                 </tr>
                 <tr>
@@ -56,7 +89,8 @@ const ScheduleTable = () => {
                 <tr>
                     <td>Row 1, Column 1</td>
                     <td>Row 5, Column 1</td>
-                    <td>Row 5, Column 2</td>
+                    <td>Row 5, Column 2
+                    </td>
                     <td>Row 5, Column 3</td>
                     <td>Row 5, Column 4</td>
                     <td>Row 5, Column 5</td>
@@ -65,10 +99,15 @@ const ScheduleTable = () => {
                 <tr>
                     <td>Row 1, Column 1</td>
                     <td>Row 6, Column 1</td>
-                    <td>Row 6, Column 2</td>
+                    <td>Row 6, Column 2
+                        </td>
                     <td>Row 6, Column 3</td>
-                    <td>Row 6, Column 4</td>
-                    <td>Row 6, Column 5</td>
+                    <td>Row 6, Column 4
+                        {cell_info(4,6).map((l,index) =>
+                            <LessonCell lesson={l} key={index}/>
+                        )}</td>
+                    <td>Row 6, Column 5
+                        </td>
                     <td>Row 6, Column 6</td>
                 </tr>
                 <tr>
@@ -76,8 +115,14 @@ const ScheduleTable = () => {
                     <td>Row 7, Column 1</td>
                     <td>Row 7, Column 2</td>
                     <td>Row 7, Column 3</td>
-                    <td>Row 7, Column 4</td>
-                    <td>Row 7, Column 5</td>
+                    <td>Row 7, Column 4
+                        {cell_info(4,7).map((l,index) =>
+                            <LessonCell lesson={l} key={index}/>
+                        )}</td>
+                    <td>Row 7, Column 5
+                        {cell_info(5,7).map((l,index) =>
+                            <LessonCell lesson={l} key={index}/>
+                        )}</td>
                     <td>Row 7, Column 6</td>
                 </tr>
                 <tr>
