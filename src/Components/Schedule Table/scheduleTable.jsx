@@ -28,10 +28,6 @@ const ScheduleTable = (props) => {
         }
         return result;
     }
-    console.log(cell_info(2,6));
-    console.log(cell_info(4,6));
-    console.log(cell_info(4,7));
-    console.log(cell_info(5,7));
     return (
         <div>
             <table className={classes.schedule}>
