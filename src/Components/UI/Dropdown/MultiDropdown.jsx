@@ -12,7 +12,7 @@ const MultiDropdown = ({children, ...props}) => {
         select.addEventListener("change", function(element) {
             let selectedOptions = this.selectedOptions;
             label.innerHTML = "";
-            output = output + option.value + ",";
+            output = output + option.value + ",";//Error
             for (let option of selectedOptions) {
                 let button = document.createElement("button");
                 button.type = "button";
