@@ -57,7 +57,10 @@ const ScheduleTable = (props) => {
                     <td>Row 2, Column 1</td>
                     <td>Row 2, Column 2</td>
                     <td>Row 2, Column 3</td>
-                    <td>Row 2, Column 4</td>
+                    <td>Row 2, Column 4
+                        {cell_info(4,2).map((l,index) =>
+                            <LessonCell lesson={l} key={index}/>
+                        )}</td>
                     <td>Row 2, Column 5
                         {cell_info(5,2).map((l,index) =>
                             <LessonCell lesson={l} key={index}/>

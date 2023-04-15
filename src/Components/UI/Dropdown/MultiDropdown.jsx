@@ -1,18 +1,26 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import classes from './MultiDropdown.scss';
 
-const MultiDropdown = ({children, ...props}) => {
+const MultiDropdown = ({children, add, del, ...props}) => {
 
+    const [filters,setFilters] = useState([]);
     let multiselect_block = document.querySelectorAll(".multiselect_block");
     multiselect_block.forEach(parent => {
         let label = parent.querySelector(".field_multiselect");
         let select = parent.querySelector(".field_select");
         let text = label.innerHTML;
-        let output;
+
         select.addEventListener("change", function(element) {
             let selectedOptions = this.selectedOptions;
             label.innerHTML = "";
-            output = output + option.value + ",";//Error
+            let arr= [];
+            for(let i=0; i < this.selectedOptions.length;i++){
+                arr.push(this.selectedOptions[i].value)
+                setFilters(arr);
+                console.log("arr: " + arr);
+                console.log(i +":"+ this.selectedOptions[i].value);
+            }
+            add(arr);
             for (let option of selectedOptions) {
                 let button = document.createElement("button");
                 button.type = "button";
@@ -20,13 +28,28 @@ const MultiDropdown = ({children, ...props}) => {
                 button.textContent = option.id;
                 button.onclick = _ => {
                     option.selected = false;
+                    arr.splice(arr.indexOf(option.value),1);
+                    console.log("Удаляем" + option.value);
+                    console.log("arr: " + arr);
+                    setFilters(arr);
                     button.remove();
-                    if (!select.selectedOptions.length) label.innerHTML = text
+                    if (!select.selectedOptions.length){
+                        label.innerHTML = props.name;
+                        arr = [];
+                        setFilters(arr);
+                    }
                 };
                 label.append(button);
+
             }
         })
     })
+    function addF() {
+        add(filters);
+    }
+
+
+
 
     return (
 
