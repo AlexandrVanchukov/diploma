@@ -1,12 +1,27 @@
 import React from 'react';
-
+import classes from "./Lesson_cell.module.css";
 const LessonCell = (props) => {
+    let lessonColor = classes;
+    function getColor(){
+        if (props.lesson.type === "Лекция")
+            lessonColor = classes.green;
+        else if (props.lesson.type === "Лабораторная")
+            lessonColor = classes.yellow;
+        else
+            lessonColor = classes.orange;
+        return lessonColor;
+    }
+
+
     return (
-        <div style={{backgroundColor: "#ff851d"}}>
-            <p>{props.lesson.id_lesson}</p>
-            <p>{props.lesson.num_room}</p>
-            <p>{props.lesson.name_group}</p>
-            <p>{props.lesson.type}</p>
+        <div className={classes.border}>
+            <div className={getColor()}>
+                <div>{props.lesson.name_subject}</div>
+                <div>{props.lesson.name_professor}</div>
+                <div>{props.lesson.name_group}</div>
+            </div>
+
+
         </div>
     );
 };

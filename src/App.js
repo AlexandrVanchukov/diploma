@@ -2,24 +2,31 @@ import React, {useEffect, useState} from "react";
 
 import ScheduleTable from "./Components/Schedule Table/scheduleTable";
 import Menu from "./Components/menu";
-import MultiDropdown from "./Components/UI/Dropdown/MultiDropdown";
 import { MultiSelect } from 'primereact/multiselect';
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
+import Button from "./Components/UI/Button/Button";
+import classes from "./App.module.css";
 function App() {
+    const firstMonday='2023-02-06';
 
-   const firstMonday='2023-02-06';
+    const [lessons,SetLessons] = useState([]);
+    const [subjects,SetSubjects] = useState([]);
+    const [buildings,SetBuildings] = useState([]);
+    const [professors,SetProfessors] = useState([]);
+    const [groupsNStreams,SetGroupsNStreams] = useState([]);
+    const [students,SetStudents] = useState([]);
+    const [rooms,SetRooms] = useState([]);
 
-  //let lessons = [];
-  const [lessons,SetLessons] = useState([]);
-  const [subjects,SetSubjects] = useState([]);
-  const [filterSubjects,SetFilterSubjects] = useState([]);
-  //let subjects = [];
-    show_lesson();
+    const [filterBuildings,SetFilterBuildings] = useState([]);
+    const [filterSubjects,SetFilterSubjects] = useState([]);
+    const [filterProfessors,SetFilterProfessors] = useState([]);
+    const [filterGroupsNStreams,SetFilterGroupsNStreams] = useState([]);
+    const [filterStudents,SetFilterStudents] = useState([]);
+    const [filterRooms,SetFilterRooms] = useState([]);
 
-
-    useEffect(get_subjects,[]);
-    console.log(getString(filterSubjects).toString());
+    useEffect(show_lesson,[]);
+    useEffect(get_filters_info,[]);
 
     function show_lesson(){
         let xhr = new XMLHttpRequest();
@@ -28,22 +35,64 @@ function App() {
         fd.append("pname","show_lesson");
         fd.append("db","284192");
         fd.append("p1",'6');
-        fd.append("p2",'8');
-        fd.append("p3",getString(filterSubjects).toString());
-        fd.append("p4",'');
-        fd.append("p5",'');
-        fd.append("p6",'');
-        fd.append("p7",'');
+        fd.append("p2",getStringBuilding(filterBuildings).toString());
+        fd.append("p3",getStringSubject(filterSubjects).toString());
+        fd.append("p4",getStringProfessor(filterProfessors).toString());
+        fd.append("p5",getStringGroupNStream(filterGroupsNStreams).toString());
+        fd.append("p6",getStringRooms(filterRooms).toString());
+        fd.append("p7",getStringStudents(filterStudents).toString());
         fd.append("p8",'2023-04-03');
         fd.append("p9",firstMonday);
         fd.append("format","rows");
         xhr.onload = show_lesson_temp;
         xhr.send(fd);
     }
-    function getString(arr){
+    function getStringBuilding(arr){
+        let ids = [];
+        for(let i = 0; i < arr.length; i++){
+            ids.push(arr[i].id_building);
+        }
+        return ids;
+    }
+    function getStringSubject(arr){
         let ids = [];
         for(let i = 0; i < arr.length; i++){
             ids.push(arr[i].id_subject);
+        }
+        return ids;
+    }
+    function getStringProfessor(arr){
+        let ids = [];
+        for(let i = 0; i < arr.length; i++){
+            ids.push(arr[i].isu_id_professor);
+        }
+        return ids;
+    }
+    function getStringGroupNStream(arr){
+        let ids = [];
+        for(let i = 0; i < arr.length; i++){
+            ids.push(arr[i].name);
+        }
+        return ids;
+    }
+    function getStringStudents(arr){
+        let ids = [];
+        for(let i = 0; i < arr.length; i++){
+            ids.push(arr[i].isu_id_student);
+        }
+        return ids;
+    }
+    function getStringRooms(arr){
+        let ids = [];
+        console.log(arr)
+        for(let i = 0; i < arr.length; i++){
+            ids.push(arr[i].id_cluster);
+            /*if (ids.some((x) => x === arr[i].id_cluster)){
+                continue;
+            }
+            else {
+
+            }*/
         }
         return ids;
     }
@@ -63,7 +112,6 @@ function App() {
                     }
                 }
                 SetLessons(resp.RESULTS[0]);
-                console.log(lessons);
             }
 
         }
@@ -72,20 +120,18 @@ function App() {
         }
     }
 
-    function get_subjects(){
+    function get_filters_info(){
         let xhr = new XMLHttpRequest();
         xhr.open("POST","https://sql.lavro.ru/call.php");
         let fd = new FormData();
-        fd.append("pname","getSubjects");
+        fd.append("pname","getFiltersInfo");
         fd.append("db","284192");
         fd.append("format","rows");
-        xhr.onload = get_subjects_temp;
+        xhr.onload = get_filters_info_temp;
         xhr.send(fd);
     }
 
-
-
-    function get_subjects_temp(e){
+    function get_filters_info_temp(e){
         if (e.target.status === 200){
             let resp = JSON.parse(e.target.response);
 
@@ -93,7 +139,13 @@ function App() {
                 alert("Произошла ошибка при обращении к базе данных");
             }
             else{
-                SetSubjects(resp.RESULTS[0]);
+                console.log(resp.RESULTS)
+                SetBuildings(resp.RESULTS[0]);
+                SetSubjects(resp.RESULTS[1]);
+                SetProfessors(resp.RESULTS[2]);
+                SetGroupsNStreams(resp.RESULTS[3]);
+                SetStudents(resp.RESULTS[4]);
+                SetRooms(resp.RESULTS[5]);
             }
         }
         else {
@@ -104,42 +156,29 @@ function App() {
     console.log(`Selected option: ${option}`);
   };
 
-  const addNewFilterSubject = (newFilterSubject) => {
-      console.log("До добавления " + filterSubjects);
-      console.log("Что добавляли " + newFilterSubject);
-      SetFilterSubjects(newFilterSubject[0]);
-      console.log("Что добавляли " + newFilterSubject);
-      console.log("После добавления " + filterSubjects);
-    }
- /*   const deleteNewFilterSubject = (newFilterSubject) => {
-        console.log("До удаления " + filterSubjects);
-        SetFilterSubjects(filterSubjects.slice(filterSubjects.indexOf(newFilterSubject),1));
-        console.log("Что удаляли " + newFilterSubject);
-        console.log("После удаления " + filterSubjects);
-    }
-*/
   return (
     <div className="App">
-        <div style={{minWidth: "300px", display: "inline-block"}}>
-            <Menu/>
-        </div>
-        <div style={{display: "inline-block"}}>
+        <div className={classes.container}>
             <div>
-                {<MultiDropdown name={"Дисциплина"} add={addNewFilterSubject}>
-                    {
-                        subjects.map(subject => (
-                            <option key={subject.id_subject} value={subject.id_subject} id={subject.type + " " + subject.name}>
-                                {subject.type}  {subject.name}
-                            </option>
-                        ))
-                    }
-                </MultiDropdown>}
+                <Menu/>
             </div>
-            <MultiSelect value={filterSubjects} onChange={(e) => SetFilterSubjects(e.value)} options={subjects} optionLabel="name"
-                         filter placeholder="Select Cities" maxSelectedLabels={3} className="w-full md:w-20rem" />
-            <ScheduleTable lessons={lessons}/>
+            <div style={{display: "inline-block"}}>
+                <MultiSelect value={filterBuildings} onChange={(e) => SetFilterBuildings(e.value)} options={buildings} optionLabel="address"
+                             filter placeholder="Select Building" maxSelectedLabels={1} className="w-full md:w-20rem" />
+                <MultiSelect value={filterSubjects} onChange={(e) => SetFilterSubjects(e.value)} options={subjects} optionLabel="name_subject"
+                             filter placeholder="Select Subjects" maxSelectedLabels={1} className="w-full md:w-20rem" />
+                <MultiSelect value={filterProfessors} onChange={(e) => SetFilterProfessors(e.value)} options={professors} optionLabel="name_professor"
+                             filter placeholder="Select Professors" maxSelectedLabels={3} className="w-full md:w-20rem" />
+                <MultiSelect value={filterGroupsNStreams} onChange={(e) => SetFilterGroupsNStreams(e.value)} options={groupsNStreams} optionLabel="name"
+                             filter placeholder="Select Gruops/Streams" maxSelectedLabels={3} className="w-full md:w-20rem" />
+                <MultiSelect value={filterStudents} onChange={(e) => SetFilterStudents(e.value)} options={students} optionLabel="name_student"
+                             filter placeholder="Select Students" maxSelectedLabels={3} className="w-full md:w-20rem" />
+                <MultiSelect value={filterRooms} onChange={(e) => SetFilterRooms(e.value)} options={rooms} optionLabel="num_room"
+                             filter placeholder="Select Rooms" maxSelectedLabels={3} className="w-full md:w-20rem" />
+                <Button onClick={show_lesson}>Search</Button>
+                <ScheduleTable lessons={lessons}/>
+            </div>
         </div>
-
     </div>
   );
 }

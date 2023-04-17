@@ -1,0 +1,16 @@
+
+.yellow, .green, .orange{
+    border-left:5px solid #001b38;
+    margin-bottom: 10px;
+    border-radius: 10px;
+
+}
+.yellow{
+    border-left-color: #CCFF00;
+}
+.green{
+    border-left-color: #00FF19;
+}
+.orange{
+    border-left-color: orange;
+}
