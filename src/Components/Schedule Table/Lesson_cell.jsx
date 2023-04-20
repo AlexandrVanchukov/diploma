@@ -12,16 +12,13 @@ const LessonCell = (props) => {
         return lessonColor;
     }
 
-
     return (
-        <div className={classes.border}>
+        <div className={classes.cell}>
             <div className={getColor()}>
                 <div>{props.lesson.name_subject}</div>
                 <div>{props.lesson.name_professor}</div>
                 <div>{props.lesson.name_group}</div>
             </div>
-
-
         </div>
     );
 };

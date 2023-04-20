@@ -1,9 +1,12 @@
-
+.cell{
+    filter: drop-shadow(0px 0px 7px rgba(0, 0, 0, 0.05));
+    background-color: #FFFFFF;
+    border-radius: 10px;
+}
 .yellow, .green, .orange{
     border-left:5px solid #001b38;
     margin-bottom: 10px;
-    border-radius: 10px;
-
+    border-radius: 5px 0 0 5px;
 }
 .yellow{
     border-left-color: #CCFF00;
