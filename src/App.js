@@ -10,14 +10,16 @@ import classes from "./App.module.css";
 import WeekSwitch from "./Components/UI/WeekSwitch/WeekSwitch";
 import {Dropdown} from "primereact/dropdown";
 import {SelectButton} from "primereact/selectbutton";
+import ScheduleTableSem from "./Components/Schedule Table/scheduleTableSem";
 function App() {
     const firstMonday='2023-02-06';
     const [monday,SetMonday] = useState('');
     const [lessons,SetLessons] = useState([]);
-    const SemMode = [false,true];
 
-
+    const SemMode = [{value:false, name:"Неделя"},{value:true, name:"Семестр"}];
+    const WeeksMode = [{value:0, name:"Все"},{value:1, name:"Нечёт."},{value:2, name:"Чёт."}];
     const [isSemMode,setIsSemMode] = useState(false);
+    const [whichWeeksMode,setWhichWeeksMode] = useState(0);
 
     const [subjects,SetSubjects] = useState([]);
     const [buildings,SetBuildings] = useState([]);
@@ -91,6 +93,7 @@ function App() {
         fd.append("p5",getStringGroupNStream(filterGroupsNStreams).toString());
         fd.append("p6",getStringRooms(filterRooms).toString());
         fd.append("p7",getStringStudents(filterStudents).toString());
+        fd.append("p8",firstMonday);
         fd.append("format","rows");
         xhr.onload = show_lesson_temp;
         xhr.send(fd);
@@ -193,6 +196,20 @@ function App() {
       }
   }
 
+  function selectMode(value){
+      setIsSemMode(value);
+      SetLessons([]);
+  }
+
+  function clearFilters(){
+      SetFilterSubjects([]);
+      SetFilterGroupsNStreams([]);
+      SetFilterStudents([]);
+      SetFilterSubjects([]);
+      SetFilterRooms([]);
+      SetFilterBuildings([]);
+  }
+
 
   return (
     <div className="App">
@@ -214,11 +231,29 @@ function App() {
                                  filter placeholder="Select Students" maxSelectedLabels={3} className="w-full md:w-20rem" />
                     <MultiSelect value={filterRooms} onChange={(e) => SetFilterRooms(e.value)} options={rooms} optionLabel="num_room"
                                  filter placeholder="Select Rooms" maxSelectedLabels={3} className="w-full md:w-10rem" />
+                    <Button onClick={show_l}>Search</Button>
                 </div>
-                <Button onClick={show_l}>Search</Button>
-                <WeekSwitch setM={setM}/>
-                <SelectButton value={isSemMode} onChange={(e) => setIsSemMode(e.value)} options={SemMode}/>
-                <ScheduleTable lessons={lessons}/>
+
+
+                <div className={classes.weekSwitch}>
+                    <div className={classes.divs}>
+                        {isSemMode ? (
+                            <Dropdown value={whichWeeksMode} onChange={(e) => setWhichWeeksMode(e.value)} options={WeeksMode} optionLabel="name"
+                                      placeholder="Select a City" className="w-full md:w-14rem"/>
+                        ) : (
+                            <WeekSwitch setM={setM}/>
+                        )}
+                    </div>
+                    <div className={classes.divs}>
+                        <SelectButton style={{display:"inline-block"}} value={isSemMode} onChange={(e) => selectMode(e.value)} options={SemMode} optionLabel="name"/>
+                    </div>
+                </div>
+                {isSemMode ? (
+                    <ScheduleTableSem lessons={lessons}/>
+                ) : (
+                    <ScheduleTable lessons={lessons}/>
+                )}
+
             </div>
         </div>
     </div>

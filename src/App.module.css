@@ -6,3 +6,13 @@
     grid-template-areas:
     ". .";
 }
+.weekSwitch{
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0px;
+    box-sizing: border-box;
+}
+.divs{
+    width: 206px;
+    height: 47px;
+}

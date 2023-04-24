@@ -1,14 +1,23 @@
-table {
+
+thead{
+    position: sticky;
+    top: 0;
+    background: white;
+}
+table{
     width: 100%;
-    min-height: 1000px;
     border-collapse: collapse;
+
+}
+thead{
+    z-index: 1;
+    width: 100%;
+}
+tbody{
+    width: 100%;
 }
 th, td {
-
     padding: 10px;
     text-align: center;
-    border: 1px solid black;
-}
-th {
-    background-color: #94e2ff;
+    border: 1px solid #E7E7E7;
 }
