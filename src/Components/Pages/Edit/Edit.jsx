@@ -15,8 +15,10 @@ const Edit = (props) => {
     const [lessons,SetLessons] = useState([]);
 
     const SemMode = [{value:false, name:"Неделя"},{value:true, name:"Семестр"}];
+    const CreateMode = [{value:false, name:"Изменение"},{value:true, name:"Создание"}];
     const WeeksMode = [{value:0, name:"Все"},{value:1, name:"Нечёт."},{value:2, name:"Чёт."}];
     const [isSemMode,setIsSemMode] = useState(false);
+    const [isCreateMode,SetIsCreateMode] = useState(false);
     const [whichWeeksMode,setWhichWeeksMode] = useState(0);
 
     const [subjects,SetSubjects] = useState([]);
@@ -184,8 +186,10 @@ const Edit = (props) => {
             alert("Ошибка сети. Проверьте интернет соединение") ;
         }
     }
-    const setM = (m) => SetMonday(m);
+    const setM = (m) => {
+        SetMonday(m);
 
+    }
 
     const handleOptionSelect = (option) => {
         console.log(`Selected option: ${option}`);
@@ -243,7 +247,7 @@ const Edit = (props) => {
                                 <Dropdown value={whichWeeksMode} onChange={(e) => setWhichWeeksMode(e.value)} options={WeeksMode} optionLabel="name"
                                           placeholder="Select a City" className="w-full md:w-14rem"/>
                             ) : (
-                                <WeekSwitch setM={setM}/>
+                                <WeekSwitch setM={setM} onClick={show_l}/>
                             )}
                         </div>
                         <div className={classes.divs}>
@@ -253,8 +257,15 @@ const Edit = (props) => {
                     {isSemMode ? (
                         <ScheduleTableSem lessons={lessons}/>
                     ) : (
-                        <ScheduleTable lessons={lessons}/>
+                        <ScheduleTable version={props.version} lessons={lessons} isCreateMode={isCreateMode} monday={monday}/>
                     )}
+                    <div className={classes.weekSwitch}>
+                        <div className={classes.divs}>
+                        </div>
+                        <div className={classes.divsCreateMode}>
+                            <SelectButton style={{display:"inline-block"}} value={isCreateMode} onChange={(e) => SetIsCreateMode(e.value)} options={CreateMode} optionLabel="name"/>
+                        </div>
+                    </div>
 
                 </div>
             </div>

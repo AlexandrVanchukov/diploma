@@ -18,3 +18,8 @@
     font-size: 1rem;
     font-weight: normal;
 }
+.begin{
+    width: 16%;
+    height: 50px;
+    border: #E7E7E7 1px solid;
+}

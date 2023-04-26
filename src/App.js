@@ -21,6 +21,7 @@ function App() {
     <div className="App">
         <Router>
             <div className="App">
+                <div className={classes.begin}><Link className={classes.menuLink} to="/tree">Начать</Link></div>
                 {version ? (
                     <div>
                         Семестр: {semester + " "}
@@ -29,8 +30,6 @@ function App() {
                 ) : (
                     <div></div>
                 )}
-
-
                 <Routes>
                     <Route exact path='/edit' element={<Edit firstM={semester} version={version} menu={<div className={classes.menu}>
                         <div className={classes.menuItemSelected}><Link className={classes.menuLink} to="/edit">Внести изменения</Link></div>

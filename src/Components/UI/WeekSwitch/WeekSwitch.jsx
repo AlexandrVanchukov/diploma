@@ -4,7 +4,7 @@ import classes from "./WeekSwitch.module.css";
 import { AiFillCaretLeft } from "react-icons/ai";
 import { AiFillCaretRight } from "react-icons/ai";
 
-const WeekSwitch = ({setM,...props}) => {
+const WeekSwitch = ({setM,setL,...props}) => {
     Date.prototype.getWeek = function() {
         let onejan = new Date(this.getFullYear(), 0, 1);
         return Math.ceil((((this - onejan) / 86400000) + onejan.getDay() + 1) / 7);
@@ -26,14 +26,20 @@ const WeekSwitch = ({setM,...props}) => {
         return yy + '-' + mm + '-' + dd;
     }
 
-    let firstDateOfWeekStr = formatDate(new Date(curr.setDate(monday)));
-    let lastDateOfWeekStr = formatDate(new Date(curr.setDate(monday+7)));
+    Date.prototype.addDays = function(days) {
+        var date = new Date(this.valueOf());
+        date.setDate(date.getDate() + days);
+        return date;
+    }
 
+    let firstDateOfWeek = new Date(curr.setDate(monday));
+    let firstDateOfWeekStr = formatDate(firstDateOfWeek);
+    let lastDateOfWeekStr = formatDate(firstDateOfWeek.addDays(5));
     setM(firstDateOfWeekStr);
     return (
         <div className={classes.weekSwitch}>
             <button className={classes.arrow} onClick={prevWeek}><AiFillCaretLeft/></button>
-            <span>{firstDateOfWeekStr.substring(6,8)} - {lastDateOfWeekStr.substring(6,8)} </span>
+            <span>{firstDateOfWeekStr.substring(6,8)}.{firstDateOfWeekStr.substring(3,5)} - {lastDateOfWeekStr.substring(6,8)}.{lastDateOfWeekStr.substring(3,5)} </span>
             <button className={classes.arrow} onClick={nextWeek}><AiFillCaretRight/></button>
         </div>
     );
