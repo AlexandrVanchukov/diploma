@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/diploma/static/css/main.db28a786.css",
+    "main.js": "/diploma/static/js/main.307905e9.js",
+    "static/media/color.png": "/diploma/static/media/color.6441e63a57ccc5105bad.png",
+    "index.html": "/diploma/index.html",
+    "main.db28a786.css.map": "/diploma/static/css/main.db28a786.css.map",
+    "main.307905e9.js.map": "/diploma/static/js/main.307905e9.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.db28a786.css",
+    "static/js/main.307905e9.js"
+  ]
+}
