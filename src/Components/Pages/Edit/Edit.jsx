@@ -27,7 +27,7 @@ const Edit = (props) => {
     const [groupsNStreams,SetGroupsNStreams] = useState([]);
     const [students,SetStudents] = useState([]);
     const [rooms,SetRooms] = useState([]);
-
+    //
     const [filterBuildings,SetFilterBuildings] = useState([]);
     const [filterSubjects,SetFilterSubjects] = useState([]);
     const [filterProfessors,SetFilterProfessors] = useState([]);
@@ -257,7 +257,7 @@ const Edit = (props) => {
                     {isSemMode ? (
                         <ScheduleTableSem lessons={lessons}/>
                     ) : (
-                        <ScheduleTable version={props.version} lessons={lessons} isCreateMode={isCreateMode} monday={monday}/>
+                        <ScheduleTable version={props.version} lessons={lessons} isCreateMode={isCreateMode} monday={monday} subjects={subjects} professors={professors} groupsNStreams={groupsNStreams} rooms={rooms} />
                     )}
                     <div className={classes.weekSwitch}>
                         <div className={classes.divs}>

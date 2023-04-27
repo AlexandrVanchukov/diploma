@@ -2,8 +2,27 @@ import React, {useEffect, useState} from 'react';
 import classes from './ScheduleTable.module.css';
 import {renderToStaticMarkup} from "react-dom/server";
 import LessonCell from "./Lesson_cell";
+import Modal from "../UI/Modal/Modal";
+import {Dropdown} from "primereact/dropdown";
+import {MultiSelect} from "primereact/multiselect";
+import Button from "../UI/Button/Button";
+import Input from "../UI/Input/Input";
+import {InputNumber} from "primereact/inputnumber";
 
 const ScheduleTable = (props) => {
+    const [modal, setModal] = useState(false);
+
+    const intervals = [{value:0, name:"Без повтора"},{value:7, name:" 7 дней"},{value:14, name:" 14 дней"},{value:28, name:" 28 дней"}];
+
+    const [currDay,SetCurrDay] = useState(0);
+    const [currNumL,SetCurrNumL] = useState(0);
+
+    const [quantity,setQuantity] = useState(1);
+    const [selectedInterval,SetSelectedInterval] = useState([]);
+    const [selectedSubjects,SetSelectedSubjects] = useState([]);
+    const [selectedProfessors,SetSelectedProfessors] = useState([]);
+    const [selectedGroupsNStreams,SetSelectedGroupsNStreams] = useState([]);
+    const [selectedRooms,SetSelectedRooms] = useState([]);
 
     function cell_info(day, num_l){
         let result = [];
@@ -29,6 +48,8 @@ const ScheduleTable = (props) => {
         return result;
     }
 
+
+    console.log(selectedRooms);
     function create_lesson(day,num_l){
         let xhr = new XMLHttpRequest();
         xhr.open("POST","https://sql.lavro.ru/call.php");
@@ -36,14 +57,14 @@ const ScheduleTable = (props) => {
         fd.append("pname","create_lesson");
         fd.append("db","284192");
         fd.append("p1",props.version.id_version);
-        fd.append("p2",'24041');
+        fd.append("p2",selectedRooms.id_cluster.toString());
         fd.append("p3",num_l);
-        fd.append("p4",'15');
-        fd.append("p5",'129889');
-        fd.append("p6",'7');
+        fd.append("p4",selectedSubjects.id_subject.toString());
+        fd.append("p5",selectedProfessors.isu_id_professor.toString());
+        fd.append("p6",selectedInterval.toString());
         fd.append("p7",formatDateFul(new Date(date.addDays(day-1))));
-        fd.append("p8","1");
-        fd.append("p9",'P33682,P33702');
+        fd.append("p8",quantity);
+        fd.append("p9",getStringGroupNStream(selectedGroupsNStreams).toString());
         fd.append("format","rows");
         xhr.onload = create_lesson_temp;
         xhr.send(fd);
@@ -78,13 +99,52 @@ const ScheduleTable = (props) => {
         }
     }
 
+    function getStringSubject(arr){
+        let ids = [];
+        for(let i = 0; i < arr.length; i++){
+            ids.push(arr[i].id_subject);
+        }
+        return ids;
+    }
+    function getStringProfessor(arr){
+        let ids = [];
+        for(let i = 0; i < arr.length; i++){
+            ids.push(arr[i].isu_id_professor);
+        }
+        return ids;
+    }
+    function getStringGroupNStream(arr){
+        let ids = [];
+        for(let i = 0; i < arr.length; i++){
+            ids.push(arr[i].name);
+        }
+        return ids;
+    }
+    function getStringStudents(arr){
+        let ids = [];
+        for(let i = 0; i < arr.length; i++){
+            ids.push(arr[i].isu_id_student);
+        }
+        return ids;
+    }
+    function getStringRooms(arr){
+        return arr.id_cluster;
+    }
+
     const handleRowClick = (day,num_l) => {
         if(props.isCreateMode){
-            create_lesson(day,num_l);
+            setModal(true);
+            SetCurrDay(day);
+            SetCurrNumL(num_l);
+            //create_lesson(day,num_l);
         }
         else {
 
         }
+    };
+
+    const handleButtonClick = (day,num_l) => {
+            create_lesson(day,num_l);
     };
 
     function formatDateFul(date) {
@@ -199,6 +259,20 @@ const ScheduleTable = (props) => {
                 </tr>
                 </tbody>
             </table>
+            <Modal visible={modal} setVisible={setModal}>
+                <Dropdown value={selectedSubjects} onChange={(e) => SetSelectedSubjects(e.value)} options={props.subjects} optionLabel="name_subject"
+                          filter placeholder="Select a Subject" className="w-full md:w-14rem" />
+                <Dropdown value={selectedProfessors} onChange={(e) => SetSelectedProfessors(e.value)} options={props.professors} optionLabel="name_professor"
+                          filter placeholder="Select a Professor" className="w-full md:w-14rem" />
+                <MultiSelect value={selectedGroupsNStreams} onChange={(e) => SetSelectedGroupsNStreams(e.value)} options={props.groupsNStreams} optionLabel="name"
+                             filter placeholder="Select Gruops/Streams" maxSelectedLabels={3} className="w-full md:w-20rem" />
+                <Dropdown value={selectedRooms} onChange={(e) => SetSelectedRooms(e.value)} options={props.rooms} optionLabel="num_room"
+                          filter placeholder="Select a Room" className="w-full md:w-14rem" />
+                <Dropdown value={selectedInterval} onChange={(e) => SetSelectedInterval(e.value)} options={intervals} optionLabel="name"
+                           placeholder="Select an Interval" className="w-full md:w-14rem" />
+                <InputNumber value={quantity} onValueChange={(e) => setQuantity(e.value)} />
+                <Button onClick={() => handleButtonClick(currDay,currNumL)}>Создать</Button>
+            </Modal>
         </div>
     );
 };
