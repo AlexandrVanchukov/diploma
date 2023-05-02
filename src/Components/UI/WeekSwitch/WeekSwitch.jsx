@@ -1,18 +1,22 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Button from "../Button/Button";
 import classes from "./WeekSwitch.module.css";
 import { AiFillCaretLeft } from "react-icons/ai";
 import { AiFillCaretRight } from "react-icons/ai";
 
-const WeekSwitch = ({setM,setL,...props}) => {
+const WeekSwitch = ({onClick,setM,...props}) => {
     Date.prototype.getWeek = function() {
         let onejan = new Date(this.getFullYear(), 0, 1);
         return Math.ceil((((this - onejan) / 86400000) + onejan.getDay() + 1) / 7);
     }
     const curr = new Date;
     const [monday,SetMonday] = useState(curr.getDate() - curr.getDay()+1);
-    const nextWeek = () => SetMonday(monday + 7);
-    const prevWeek = () => SetMonday(monday - 7);
+    const nextWeek = () => {
+        SetMonday(monday + 7);
+    }
+    const prevWeek = () => {
+        SetMonday(monday - 7);
+    }
     function formatDate(date) {
         let dd = date.getDate();
         if (dd < 10) dd = '0' + dd;
@@ -36,6 +40,7 @@ const WeekSwitch = ({setM,setL,...props}) => {
     let firstDateOfWeekStr = formatDate(firstDateOfWeek);
     let lastDateOfWeekStr = formatDate(firstDateOfWeek.addDays(5));
     setM(firstDateOfWeekStr);
+
     return (
         <div className={classes.weekSwitch}>
             <button className={classes.arrow} onClick={prevWeek}><AiFillCaretLeft/></button>

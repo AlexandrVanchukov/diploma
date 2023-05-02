@@ -11,7 +11,7 @@ import Tree from 'react-d3-tree';
 
 const TreeVersion = (props) => {
     const [semesters,setSemesters] = useState([]);
-    const [whichSemester,setWhichSemester] = useState(props.semester);
+    const [whichSemester,setWhichSemester] = useState([]);
 
     const [versions,setVersions] = useState();
     const [whichVersion,setWhichVersion] = useState(props.version);

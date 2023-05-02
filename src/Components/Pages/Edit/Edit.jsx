@@ -35,9 +35,20 @@ const Edit = (props) => {
     const [filterStudents,SetFilterStudents] = useState([]);
     const [filterRooms,SetFilterRooms] = useState([]);
 
+    const [selectedLesson,SetSelectedLesson] = useState([]);
+
+    const [tips,SetTips] = useState([]);
+    const [professorIcons,SetProfessorIcons] = useState([]);
+    const [groupIcons,SetGroupIcons] = useState([]);
+    const [studentsIcons,SetStudentsIcons] = useState([]);
+    const [roomsIcons,SetRoomsIcons] = useState([]);
 
     useEffect(get_filters_info,[]);
-    console.log(monday);
+    console.log(tips);
+    console.log(professorIcons);
+    console.log(groupIcons);
+    console.log(studentsIcons);
+    console.log(roomsIcons);
     function show_lesson(){
         let xhr = new XMLHttpRequest();
         xhr.open("POST","https://sql.lavro.ru/call.php");
@@ -186,11 +197,45 @@ const Edit = (props) => {
             alert("Ошибка сети. Проверьте интернет соединение") ;
         }
     }
-    const setM = (m) => {
-        SetMonday(m);
 
+    function show_tips(){
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST","https://sql.lavro.ru/call.php");
+        let fd = new FormData();
+        fd.append("pname","show_tips");
+        fd.append("db","284192");
+        fd.append("p1",props.version.id_version);
+        fd.append("p2",selectedLesson.id_lesson);
+        fd.append("p3","20" + monday);
+        fd.append("p4",firstMonday);
+        fd.append("format","rows");
+        xhr.onload = show_tips_temp;
+        xhr.send(fd);
     }
 
+    function show_tips_temp(e){
+        if (e.target.status === 200){
+            let resp = JSON.parse(e.target.response);
+            console.log(resp.RESULTS);
+            if(!resp.RESULTS){
+                alert("Произошла ошибка при обращении к базе данных");
+            }
+            else{
+                SetTips(resp.RESULTS);
+                SetProfessorIcons(resp.RESULTS[0], resp.RESULTS[1]);
+                SetGroupIcons(resp.RESULTS[2]);
+                SetStudentsIcons(resp.RESULTS[3]);
+                SetRoomsIcons(resp.RESULTS[5]);
+
+            }
+
+        }
+        else {
+            alert("Ошибка сети. Проверьте интернет соединение") ;
+        }
+    }
+
+    const setM = (m) => {SetMonday(m);}
     const handleOptionSelect = (option) => {
         console.log(`Selected option: ${option}`);
     };
@@ -200,7 +245,7 @@ const Edit = (props) => {
             show_lesson_sem()
         }
         else {
-            show_lesson()
+            show_lesson();
         }
     }
 
@@ -217,7 +262,6 @@ const Edit = (props) => {
         SetFilterRooms([]);
         SetFilterBuildings([]);
     }
-
 
     return (
         <div>
@@ -257,7 +301,8 @@ const Edit = (props) => {
                     {isSemMode ? (
                         <ScheduleTableSem lessons={lessons}/>
                     ) : (
-                        <ScheduleTable version={props.version} lessons={lessons} isCreateMode={isCreateMode} monday={monday} subjects={subjects} professors={professors} groupsNStreams={groupsNStreams} rooms={rooms} />
+                        <ScheduleTable version={props.version} firstMonday={firstMonday} lessons={lessons} isCreateMode={isCreateMode} monday={monday} subjects={subjects} professors={professors} groupsNStreams={groupsNStreams} rooms={rooms}
+                                       show_tips={show_tips} selectedLesson={selectedLesson}  setSelectedLesson={SetSelectedLesson} professorIcons={professorIcons} groupIcons={groupIcons} studentsIcons={studentsIcons} roomsIcons={roomsIcons}/>
                     )}
                     <div className={classes.weekSwitch}>
                         <div className={classes.divs}>

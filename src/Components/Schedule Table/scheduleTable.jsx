@@ -1,16 +1,20 @@
 import React, {useEffect, useState} from 'react';
 import classes from './ScheduleTable.module.css';
-import {renderToStaticMarkup} from "react-dom/server";
-import LessonCell from "./Lesson_cell";
 import Modal from "../UI/Modal/Modal";
 import {Dropdown} from "primereact/dropdown";
 import {MultiSelect} from "primereact/multiselect";
 import Button from "../UI/Button/Button";
-import Input from "../UI/Input/Input";
 import {InputNumber} from "primereact/inputnumber";
+import TdTable from "./TdTable";
+import { RadioButton } from "primereact/radiobutton";
+
 
 const ScheduleTable = (props) => {
     const [modal, setModal] = useState(false);
+    const [modalChangeLesson, setModalChangeLesson] = useState(false);
+    const [modalMoveLesson, setModalMoveLesson] = useState(false);
+
+    const [isModeTips, setIsModeTips] = useState(false);
 
     const intervals = [{value:0, name:"Без повтора"},{value:7, name:" 7 дней"},{value:14, name:" 14 дней"},{value:28, name:" 28 дней"}];
 
@@ -23,6 +27,13 @@ const ScheduleTable = (props) => {
     const [selectedProfessors,SetSelectedProfessors] = useState([]);
     const [selectedGroupsNStreams,SetSelectedGroupsNStreams] = useState([]);
     const [selectedRooms,SetSelectedRooms] = useState([]);
+
+    const categories = [
+        { name: 'Только это мероприятие', key: '1' },
+        { name: 'Это и последующие мероприятия', key: '2' },
+        { name: 'Все мероприятия', key: '3' },
+    ];
+    const [selectedCategory, setSelectedCategory] = useState(categories[0]);
 
     function cell_info(day, num_l){
         let result = [];
@@ -45,6 +56,38 @@ const ScheduleTable = (props) => {
                 }
             }
         }
+        return result;
+    }
+    function cellTips(day, num_l) {
+        let result = [];
+        let professorIcon = false;
+        let groupIcon = false;
+        let studentsIcon = false;
+        let roomIcon = false;
+        for (let i= 0; i < props.professorIcons.length; i++){
+            if (props.professorIcons[i].dayofweek-1 === day && props.professorIcons[i].num_lesson === num_l) {
+                professorIcon = true;
+            }
+        }
+        for (let i= 0; i < props.groupIcons.length; i++){
+            if (props.groupIcons[i].dayofweek-1 === day && props.groupIcons[i].num_lesson === num_l) {
+                groupIcon = true;
+            }
+        }
+            for (let i= 0; i < props.studentsIcons.length; i++){
+                if (props.studentsIcons[i].dayofweek-1 === day && props.studentsIcons[i].num_lesson === num_l) {
+                    studentsIcon = true;
+                }
+            }
+        for (let i= 0; i < props.roomsIcons.length; i++){
+            if (props.roomsIcons[i].dayofweek-1 === day && props.roomsIcons[i].num_lesson === num_l) {
+                roomIcon = true;
+            }
+        }
+        result.push(professorIcon);
+        result.push(groupIcon);
+        result.push(studentsIcon);
+        result.push(roomIcon);
         return result;
     }
 
@@ -99,20 +142,42 @@ const ScheduleTable = (props) => {
         }
     }
 
-    function getStringSubject(arr){
-        let ids = [];
-        for(let i = 0; i < arr.length; i++){
-            ids.push(arr[i].id_subject);
-        }
-        return ids;
+    function move_lesson(){
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST","https://sql.lavro.ru/call.php");
+        let fd = new FormData();
+        fd.append("pname","move_lesson");
+        fd.append("db","284192");
+        fd.append("p1",props.version.id_version);
+        fd.append("p2",props.selectedLesson.id_lesson);
+        fd.append("p3",formatDateFul(new Date(date.addDays(currDay-1))));
+        fd.append("p4",currNumL);
+        fd.append("p5",props.selectedLesson.id_cluster);
+        fd.append("p6",props.monday);
+        fd.append("p7",selectedCategory.key);
+        fd.append("format","rows");
+        xhr.onload = move_lesson_temp;
+        xhr.send(fd);
     }
-    function getStringProfessor(arr){
-        let ids = [];
-        for(let i = 0; i < arr.length; i++){
-            ids.push(arr[i].isu_id_professor);
+
+    function move_lesson_temp(e){
+        if (e.target.status === 200){
+            let resp = JSON.parse(e.target.response);
+            console.log(resp.RESULTS);
+            if(!resp.RESULTS){
+                alert("Произошла ошибка при обращении к базе данных");
+            }
+            else{
+                //set version mb
+            }
+
         }
-        return ids;
+        else {
+            alert("Ошибка сети. Проверьте интернет соединение") ;
+        }
     }
+
+
     function getStringGroupNStream(arr){
         let ids = [];
         for(let i = 0; i < arr.length; i++){
@@ -120,32 +185,55 @@ const ScheduleTable = (props) => {
         }
         return ids;
     }
-    function getStringStudents(arr){
-        let ids = [];
-        for(let i = 0; i < arr.length; i++){
-            ids.push(arr[i].isu_id_student);
-        }
-        return ids;
-    }
-    function getStringRooms(arr){
-        return arr.id_cluster;
-    }
+
 
     const handleRowClick = (day,num_l) => {
         if(props.isCreateMode){
             setModal(true);
             SetCurrDay(day);
             SetCurrNumL(num_l);
-            //create_lesson(day,num_l);
+
         }
         else {
-
+            if(isModeTips){
+                setModalMoveLesson(true);
+                SetCurrDay(day);
+                SetCurrNumL(num_l);
+            }
         }
     };
 
-    const handleButtonClick = (day,num_l) => {
+    const handleCreateLessonButtonClick = (day,num_l) => {
             create_lesson(day,num_l);
     };
+    const handleChangeLessonButtonClick = () => {
+
+    };
+    const handleMoveLessonButtonClick = () => {
+        setIsModeTips(true);
+        setModalChangeLesson(false);
+        props.show_tips();
+    };
+
+    const handleLessonClick = (lesson) => {
+        props.setSelectedLesson(lesson);
+        setModalChangeLesson(true);
+
+    };
+
+    const handleCancelMoveLessonButton = () => {
+        setModalMoveLesson(false);
+        setIsModeTips(false);
+        props.setSelectedLesson([]);
+    };
+    const handleAcceptMoveLessonButton = () => {
+        setModalMoveLesson(false);
+        setIsModeTips(false);
+        props.setSelectedLesson([]);
+        move_lesson();
+    };
+
+
 
     function formatDateFul(date) {
         let dd = date.getDate();
@@ -185,80 +273,81 @@ const ScheduleTable = (props) => {
                 <tbody>
                 <tr>
                     <td>8:20 - 9:50</td>
-                    <td onClick={() => handleRowClick(1,1)}>{cell_info(1,1).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(2,1)}>{cell_info(2,1).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(3,1)}>{cell_info(3,1).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(4,1)}>{cell_info(4,1).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(5,1)}>{cell_info(5,1).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(6,1)}>{cell_info(6,1).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
+                    <TdTable day={1} num_l={1} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={2} num_l={1} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={3} num_l={1} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={4} num_l={1} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={5} num_l={1} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={6} num_l={1} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
                 </tr>
                 <tr>
                     <td>10:00 - 11:30</td>
-                    <td onClick={() => handleRowClick(1,2)}>{cell_info(1,2).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(2,2)}>{cell_info(2,2).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(3,2)}>{cell_info(3,2).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(4,2)}>{cell_info(4,2).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(5,2)}>{cell_info(5,2).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(6,2)}>{cell_info(6,2).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
+                    <TdTable day={1} num_l={2} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={2} num_l={2} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={3} num_l={2} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={4} num_l={2} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={5} num_l={2} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={6} num_l={2} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
                 </tr>
                 <tr>
                     <td>11:40 - 13:10</td>
-                    <td onClick={() => handleRowClick(1,3)}>{cell_info(1,3).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(2,3)}>{cell_info(2,3).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(3,3)}>{cell_info(3,3).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(4,3)}>{cell_info(4,3).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(5,3)}>{cell_info(5,3).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(6,3)}>{cell_info(6,3).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
+                    <TdTable day={1} num_l={3} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={2} num_l={3} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={3} num_l={3} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={4} num_l={3} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={5} num_l={3} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={6} num_l={3} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
                 </tr>
                 <tr>
                     <td>13:30 - 15:00</td>
-                    <td onClick={() => handleRowClick(1,4)}>{cell_info(1,4).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(2,4)}>{cell_info(2,4).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(3,4)}>{cell_info(3,4).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(4,4)}>{cell_info(4,4).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(5,4)}>{cell_info(5,4).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(6,4)}>{cell_info(6,4).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
+                    <TdTable day={1} num_l={4} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={2} num_l={4} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={3} num_l={4} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={4} num_l={4} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={5} num_l={4} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={6} num_l={4} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
 
                 </tr>
                 <tr>
                     <td>15:20 - 16:50</td>
-                    <td onClick={() => handleRowClick(1,5)}>{cell_info(1,5).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(2,5)}>{cell_info(2,5).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(3,5)}>{cell_info(3,5).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(4,5)}>{cell_info(4,5).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(5,5)}>{cell_info(5,5).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(6,5)}>{cell_info(6,5).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
+                    <TdTable day={1} num_l={5} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={2} num_l={5} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={3} num_l={5} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={4} num_l={5} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={5} num_l={5} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={6} num_l={5} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
                 </tr>
                 <tr>
                     <td>17:00 - 18:30</td>
-                    <td onClick={() => handleRowClick(1,6)}>{cell_info(1,6).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(2,6)}>{cell_info(2,6).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(3,6)}>{cell_info(3,6).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(4,6)}>{cell_info(4,6).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(5,6)}>{cell_info(5,6).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(6,6)}>{cell_info(6,6).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
+                    <TdTable day={1} num_l={6} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={2} num_l={6} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={3} num_l={6} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={4} num_l={6} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={5} num_l={6} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={6} num_l={6} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
 
                 </tr>
                 <tr>
                     <td>18:40 - 20:10</td>
-                    <td onClick={() => handleRowClick(1,7)}>{cell_info(1,7).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(2,7)}>{cell_info(2,7).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(3,7)}>{cell_info(3,7).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(4,7)}>{cell_info(4,7).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(5,7)}>{cell_info(5,7).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(6,7)}>{cell_info(6,7).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
+                    <TdTable day={1} num_l={7} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={2} num_l={7} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={3} num_l={7} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={4} num_l={7} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={5} num_l={7} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={6} num_l={7} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
                 </tr>
                 <tr>
                     <td>20:20 - 21:50</td>
-                    <td onClick={() => handleRowClick(1,8)}>{cell_info(1,8).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(2,8)}>{cell_info(2,8).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(3,8)}>{cell_info(3,8).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(4,8)}>{cell_info(4,8).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(5,8)}>{cell_info(5,8).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td onClick={() => handleRowClick(6,8)}>{cell_info(6,8).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
+                    <TdTable day={1} num_l={8} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={2} num_l={8} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={3} num_l={8} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={4} num_l={8} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={5} num_l={8} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
+                    <TdTable day={6} num_l={8} handleRowClick={handleRowClick} handleLessonClick={handleLessonClick} cell_info={cell_info} isModeTips={isModeTips} cellTips={cellTips} selected={props.selectedLesson}/>
                 </tr>
                 </tbody>
             </table>
+
             <Modal visible={modal} setVisible={setModal}>
                 <Dropdown value={selectedSubjects} onChange={(e) => SetSelectedSubjects(e.value)} options={props.subjects} optionLabel="name_subject"
                           filter placeholder="Select a Subject" className="w-full md:w-14rem" />
@@ -271,7 +360,32 @@ const ScheduleTable = (props) => {
                 <Dropdown value={selectedInterval} onChange={(e) => SetSelectedInterval(e.value)} options={intervals} optionLabel="name"
                            placeholder="Select an Interval" className="w-full md:w-14rem" />
                 <InputNumber value={quantity} onValueChange={(e) => setQuantity(e.value)} />
-                <Button onClick={() => handleButtonClick(currDay,currNumL)}>Создать</Button>
+                <Button onClick={() => handleCreateLessonButtonClick(currDay,currNumL)}>Создать</Button>
+            </Modal>
+            <Modal visible={modalChangeLesson} setVisible={setModalChangeLesson}>
+                <div>
+                    <div>{props.selectedLesson.name_subject}</div>
+                    <div>{props.selectedLesson.name_professor}</div>
+                    <div>{props.selectedLesson.num_room},{props.selectedLesson.address}</div>
+                    <div>{props.selectedLesson.name_group}</div>
+                    <Button onClick={() => handleChangeLessonButtonClick()}>Изменить</Button>
+                    <Button onClick={() => handleMoveLessonButtonClick()}>Перенести</Button>
+                </div>
+            </Modal>
+            <Modal visible={modalMoveLesson} setVisible={setModalMoveLesson}>
+                <div>
+                    Изменение повторяющегося мероприятия
+                    {categories.map((category) => {
+                        return (
+                            <div key={category.key} className="flex align-items-center">
+                                <RadioButton inputId={category.key} name="category" value={category} onChange={(e) => setSelectedCategory(e.value)} checked={selectedCategory.key === category.key} />
+                                <label htmlFor={category.key} className="ml-2">{category.name}</label>
+                            </div>
+                        );
+                    })}
+                    <Button onClick={() => handleCancelMoveLessonButton()}>Отмена</Button>
+                    <Button onClick={() => handleAcceptMoveLessonButton()}>ОК</Button>
+                </div>
             </Modal>
         </div>
     );
