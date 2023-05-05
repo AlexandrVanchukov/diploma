@@ -4,7 +4,7 @@ const LessonCell = (props) => {
     let lessonColor = classes;
 
     function getColor(){
-        if(props.selected.id_lesson === props.lesson.id_lesson){
+        if(props.selected){//=== props.lesson.id_lesson
             lessonColor = classes.selected;
         }
         else {
@@ -17,9 +17,6 @@ const LessonCell = (props) => {
         }
 
         return lessonColor;
-    }
-    function f() {
-
     }
 
     return (

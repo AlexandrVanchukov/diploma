@@ -83,7 +83,7 @@ const TreeVersion = (props) => {
 
     function get_versions(value){
         setWhichSemester(value);
-        props.setSem(value.first_monday);
+        props.setSem(value);
         let xhr = new XMLHttpRequest();
         xhr.open("POST","https://sql.lavro.ru/call.php");
         let fd = new FormData();

@@ -10,7 +10,7 @@ import ScheduleTableSem from "../../Schedule Table/scheduleTableSem";
 import ScheduleTable from "../../Schedule Table/scheduleTable";
 
 const Edit = (props) => {
-    const firstMonday= props.firstM;
+    const firstMonday= props.firstM.first_monday;
     const [monday,SetMonday] = useState('');
     const [lessons,SetLessons] = useState([]);
 
