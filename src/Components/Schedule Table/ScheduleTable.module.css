@@ -21,3 +21,16 @@ th, td {
     text-align: center;
     border: 1px solid #E7E7E7;
 }
+.white{
+    background-color: #FFFFFF;
+}
+.red{
+    background-color: #FF00002E;
+}
+.yellow{
+    background-color: #CCFF002E;
+}
+.green{
+    background-color: #00FF192E;
+}
+

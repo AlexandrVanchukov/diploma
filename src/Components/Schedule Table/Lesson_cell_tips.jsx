@@ -1,28 +1,34 @@
 import React from 'react';
-
+import professorIcon from '../UI/Icons/professor.svg'
+import groupIcon from '../UI/Icons/group.svg'
+import roomIcon from '../UI/Icons/room.svg'
+import studentIcon from '../UI/Icons/student.svg'
 const LessonCellTips = (props) => {
+
+
+
     return (
-        <div>
+        <div style={{float:"right"}}>
             {props.tips[0] ? (
-                <span>p</span>
+                <img src={professorIcon} style={{paddingRight:"5px"}}/>
             ) : (
                 <span></span>
             )}
 
             {props.tips[1] ? (
-                <span>g</span>
+                <img src={groupIcon} style={{paddingRight:"5px"}}/>
             ) : (
                 <span></span>
             )}
 
             {props.tips[2] ? (
-                <span>s</span>
+                <img src={studentIcon} style={{paddingRight:"5px"}}/>
             ) : (
                 <span></span>
             )}
 
             {props.tips[3] ? (
-                <span>r</span>
+                <img src={roomIcon} style={{paddingRight:"5px"}}/>
             ) : (
                 <span></span>
             )}

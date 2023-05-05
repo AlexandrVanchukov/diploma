@@ -44,11 +44,6 @@ const Edit = (props) => {
     const [roomsIcons,SetRoomsIcons] = useState([]);
 
     useEffect(get_filters_info,[]);
-    console.log(tips);
-    console.log(professorIcons);
-    console.log(groupIcons);
-    console.log(studentsIcons);
-    console.log(roomsIcons);
     function show_lesson(){
         let xhr = new XMLHttpRequest();
         xhr.open("POST","https://sql.lavro.ru/call.php");
@@ -87,10 +82,8 @@ const Edit = (props) => {
                         }
                     }
                 }
-
                 SetLessons(resp.RESULTS[0]);
             }
-
         }
         else {
             alert("Ошибка сети. Проверьте интернет соединение") ;
