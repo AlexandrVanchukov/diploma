@@ -8,6 +8,10 @@ import classes from "./App.module.css";
 import ScheduleTableSem from "./Components/Schedule Table/scheduleTableSem";
 import ScheduleTable from "./Components/Schedule Table/scheduleTable";
 import Compare from "./Components/Pages/Compare/Compare";
+import RoomsAvailable from "./Components/Pages/Rooms Available/RoomsAvailable";
+import ProfessorsAvailable from "./Components/Pages/Professors Available/ProfessorsAvailable";
+import GroupsAvailable from "./Components/Pages/Groups Available/GroupsAvailable";
+import StudentsAvailable from "./Components/Pages/Students Available/StudentsAvailable";
 
 function App() {
 
@@ -36,16 +40,64 @@ function App() {
                         <div className={classes.menuItemSelected}><Link className={classes.menuLink} to="/edit">Внести изменения</Link></div>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/tree">Дерево версий</Link></div>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/compare">Сравнение версий</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/rooms">Занятость аудиторий</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/professors">Занятость преподавателей</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/groups">Занятость групп/потоков</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/students">Занятость студентов</Link></div>
                     </div>}/>}></Route>
                     <Route exact path='/tree' element={<TreeVersion semester={semester} version={version} setSem={setSem} setVer={setVer} menu={<div className={classes.menu}>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/edit">Внести изменения</Link></div>
                         <div className={classes.menuItemSelected}><Link className={classes.menuLink} to="/tree">Дерево версий</Link></div>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/compare">Сравнение версий</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/rooms">Занятость аудиторий</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/professors">Занятость преподавателей</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/groups">Занятость групп/потоков</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/students">Занятость студентов</Link></div>
                     </div>}/>}></Route>
                     <Route exact path='/compare' element={<Compare semester={semester} version={version} menu={<div className={classes.menu}>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/edit">Внести изменения</Link></div>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/tree">Дерево версий</Link></div>
                         <div className={classes.menuItemSelected}><Link className={classes.menuLink} to="/compare">Сравнение версий</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/rooms">Занятость аудиторий</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/professors">Занятость преподавателей</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/groups">Занятость групп/потоков</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/students">Занятость студентов</Link></div>
+                    </div>}/>}></Route>
+                    <Route exact path='/rooms' element={<RoomsAvailable semester={semester} version={version} menu={<div className={classes.menu}>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/edit">Внести изменения</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/tree">Дерево версий</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/compare">Сравнение версий</Link></div>
+                        <div className={classes.menuItemSelected}><Link className={classes.menuLink} to="/rooms">Занятость аудиторий</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/professors">Занятость преподавателей</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/groups">Занятость групп/потоков</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/students">Занятость студентов</Link></div>
+                    </div>}/>}></Route>
+                    <Route exact path='/professors' element={<ProfessorsAvailable semester={semester} version={version} menu={<div className={classes.menu}>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/edit">Внести изменения</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/tree">Дерево версий</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/compare">Сравнение версий</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/rooms">Занятость аудиторий</Link></div>
+                        <div className={classes.menuItemSelected}><Link className={classes.menuLink} to="/professors">Занятость преподавателей</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/groups">Занятость групп/потоков</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/students">Занятость студентов</Link></div>
+                    </div>}/>}></Route>
+                    <Route exact path='/groups' element={<GroupsAvailable semester={semester} version={version} menu={<div className={classes.menu}>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/edit">Внести изменения</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/tree">Дерево версий</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/compare">Сравнение версий</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/rooms">Занятость аудиторий</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/professors">Занятость преподавателей</Link></div>
+                        <div className={classes.menuItemSelected}><Link className={classes.menuLink} to="/groups">Занятость групп/потоков</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/students">Занятость студентов</Link></div>
+                    </div>}/>}></Route>
+                    <Route exact path='/students' element={<StudentsAvailable semester={semester} version={version} menu={<div className={classes.menu}>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/edit">Внести изменения</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/tree">Дерево версий</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/compare">Сравнение версий</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/rooms">Занятость аудиторий</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/professors">Занятость преподавателей</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/groups">Занятость групп/потоков</Link></div>
+                        <div className={classes.menuItemSelected}><Link className={classes.menuLink} to="/students">Занятость студентов</Link></div>
                     </div>}/>}></Route>
                 </Routes>
             </div>

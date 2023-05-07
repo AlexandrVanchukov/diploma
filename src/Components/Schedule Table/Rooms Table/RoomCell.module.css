@@ -1,0 +1,24 @@
+.free, .unavailable, .unavailableAllSem{
+    padding: 5px 10px;
+    border-radius: 10px;
+    margin-right: 5px;
+}
+
+.free{
+    background-color: #F4F3FF;
+    color: #1845C5;
+    border: #1845C5 1px solid;
+
+}
+.unavailable{
+    background-color: #FFFFFF;
+    color: #70757A;
+    border: #E6E6E6 1px solid;
+}
+.unavailableAllSem{
+    background-color: #E6E6E6;
+    color: #70757A;
+}
+.invisible{
+    display: none;
+}
