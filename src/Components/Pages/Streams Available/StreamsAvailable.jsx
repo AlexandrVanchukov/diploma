@@ -5,42 +5,42 @@ import Button from "../../UI/Button/Button";
 import WeekSwitch from "../../UI/WeekSwitch/WeekSwitch";
 import UnavailableTable from "../../Schedule Table/Unavailable Table/UnavailableTable";
 
-const StudentsAvailable = (props) => {
+const StreamsAvailable = (props) => {
     const firstMonday= props.semester.first_monday;
     const [monday,SetMonday] = useState('');
 
-    const [students,SetStudents] = useState([]);
-    const [filterStudents,SetFilterStudents] = useState([]);
+    const [streams,SetStreams] = useState([]);
+    const [filterStreams,SetFilterStreams] = useState([]);
 
-    const [unavailableStudentGroup, SetUnavailableStudentGroup] = useState([]);
-    const [unavailableStudentStream, SetUnavailableStudentStream]= useState([]);
+    const [unavailableSteamInfo, SetUnavailableSteamInfo] = useState([]);
+    const [unavailableStudentLessonInfo, SetUnavailableStudentLessonInfo]= useState([]);
     const [unavailableStudentOtherInfo, SetUnavailableStudentOtherInfo]= useState([]);
 
 
     const setM = (m) => {SetMonday(m);}
 
-    useEffect(getFiltersInfo,[]);
+    useEffect(getStreams,[]);
 
-    function unavailable_student(){
+    function unavailable_stream(){
         console.log(props.version.id_version);
-        console.log(filterStudents.name_stream);
+        console.log(filterStreams.name_stream);
         console.log(monday);
         console.log(firstMonday);
         let xhr = new XMLHttpRequest();
         xhr.open("POST","https://sql.lavro.ru/call.php");
         let fd = new FormData();
-        fd.append("pname","unavailable_student");
+        fd.append("pname","unavailable_stream");
         fd.append("db","284192");
         fd.append("p1",props.version.id_version);
-        fd.append("p2",filterStudents.isu_id_student);
+        fd.append("p2",filterStreams.name_stream);
         fd.append("p3","20"+monday);
         fd.append("p4",firstMonday);
         fd.append("format","rows");
-        xhr.onload = unavailable_student_temp;
+        xhr.onload = unavailable_stream_temp;
         xhr.send(fd);
     }
 
-    function unavailable_student_temp(e){
+    function unavailable_stream_temp(e){
         if (e.target.status === 200){
             let resp = JSON.parse(e.target.response);
             console.log(resp);
@@ -49,8 +49,8 @@ const StudentsAvailable = (props) => {
             }
             else{
                 console.log(resp.RESULTS);
-                SetUnavailableStudentGroup(resp.RESULTS[0]);
-                SetUnavailableStudentStream(resp.RESULTS[1]);
+                SetUnavailableSteamInfo(resp.RESULTS[0]);
+                SetUnavailableStudentLessonInfo(resp.RESULTS[1]);
                 SetUnavailableStudentOtherInfo(resp.RESULTS[2]);
             }
         }
@@ -59,18 +59,18 @@ const StudentsAvailable = (props) => {
         }
     }
 
-    function getFiltersInfo(){
+    function getStreams(){
         let xhr = new XMLHttpRequest();
         xhr.open("POST","https://sql.lavro.ru/call.php");
         let fd = new FormData();
-        fd.append("pname","getFiltersInfo");
+        fd.append("pname","getStreams");
         fd.append("db","284192");
         fd.append("format","rows");
-        xhr.onload = getFiltersInfo_temp;
+        xhr.onload = getStreams_temp;
         xhr.send(fd);
     }
 
-    function getFiltersInfo_temp(e){
+    function getStreams_temp(e){
         if (e.target.status === 200){
             let resp = JSON.parse(e.target.response);
 
@@ -78,7 +78,7 @@ const StudentsAvailable = (props) => {
                 alert("Произошла ошибка при обращении к базе данных");
             }
             else{
-                SetStudents(resp.RESULTS[4]);
+                SetStreams(resp.RESULTS[0]);
             }
         }
         else {
@@ -88,13 +88,19 @@ const StudentsAvailable = (props) => {
 
     function cellUnavailable(day, num_l) {
         let result = [];
-        let lessonsGroup = '';
-        let lessonsStream = false;
+        let lessonsUn = '';
         let otherUn = false;
+        let streamUn = false;
 
-        for (let i= 0; i < unavailableStudentStream.length; i++){
-            if (unavailableStudentStream[i].dayofweek-1 === day && unavailableStudentStream[i].num_lesson === num_l) {
-                lessonsStream = unavailableStudentStream[i].name_subject + "(" + unavailableStudentStream[i].type + ")";
+        for (let i= 0; i < unavailableStudentLessonInfo.length; i++){
+            if (unavailableStudentLessonInfo[i].dayofweek-1 === day && unavailableStudentLessonInfo[i].num_lesson === num_l) {
+                if(lessonsUn.indexOf(unavailableStudentLessonInfo[i].name_student + " " + unavailableStudentLessonInfo[i].isu_id_student) >= 0){
+                    continue;
+                }
+                else {
+                    lessonsUn = lessonsUn + unavailableStudentLessonInfo[i].name_student + " " + unavailableStudentLessonInfo[i].isu_id_student + ', ';
+                }
+
             }
         }
         for (let i= 0; i < unavailableStudentOtherInfo.length; i++){
@@ -102,14 +108,14 @@ const StudentsAvailable = (props) => {
                 otherUn = unavailableStudentOtherInfo[i].type;
             }
         }
-        for (let i= 0; i < unavailableStudentGroup.length; i++){
-            if (unavailableStudentGroup[i].dayofweek-1 === day && unavailableStudentGroup[i].num_lesson === num_l) {
-                lessonsGroup = unavailableStudentGroup[i].name_subject + "(" + unavailableStudentGroup[i].type + ")";
+        for (let i= 0; i < unavailableSteamInfo.length; i++){
+            if (unavailableSteamInfo[i].dayofweek-1 === day && unavailableSteamInfo[i].num_lesson === num_l) {
+                streamUn = unavailableSteamInfo[i].type;
             }
         }
-        result.push(lessonsGroup);
-        result.push(lessonsStream);
+        result.push(lessonsUn);
         result.push(otherUn);
+        result.push(streamUn);
         return result;
     }
 
@@ -118,9 +124,9 @@ const StudentsAvailable = (props) => {
             <div className={classes.container}>
                 {props.menu}
                 <div>
-                    <Dropdown value={filterStudents} onChange={(e) => SetFilterStudents(e.value)} options={students} optionLabel="name_student"
-                              filter placeholder="Select Student"  />
-                    <Button onClick={unavailable_student}>Search</Button>
+                    <Dropdown value={filterStreams} onChange={(e) => SetFilterStreams(e.value)} options={streams} optionLabel="name_stream"
+                              filter placeholder="Select Stream"  />
+                    <Button onClick={unavailable_stream}>Search</Button>
                     <div>
                         <WeekSwitch setM={setM}/>
                         <UnavailableTable cellUnavailable={cellUnavailable} monday={monday}/>
@@ -132,4 +138,4 @@ const StudentsAvailable = (props) => {
     );
 };
 
-export default StudentsAvailable;
+export default StreamsAvailable;

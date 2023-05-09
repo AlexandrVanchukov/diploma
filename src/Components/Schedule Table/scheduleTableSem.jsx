@@ -6,26 +6,46 @@ const ScheduleTableSem = (props) => {
 
     function cell_info(day, num_l){
         let result = [];
-        for (let i= 0; i < props.lessons.length; i++){
-            if (props.lessons[i].dayofweek-1 === day && props.lessons[i].num_lesson === num_l)
+        for (let i= 0; i < props.lessonsGroup.length; i++){
+            if (props.lessonsGroup[i].dayofweek-1 === day && props.lessonsGroup[i].num_lesson === num_l)
             {
-                if(result.some(o => o.id_lesson === props.lessons[i].id_lesson)){
-                    const lesson = result.find(lesson => lesson.id_lesson === props.lessons[i].id_lesson)
+                if(result.some(o => o.id_lesson === props.lessonsGroup[i].id_lesson)){
+                    const lesson = result.find(lesson => lesson.id_lesson === props.lessonsGroup[i].id_lesson)
                     result.pop();
-                    if (lesson.name_group.includes(props.lessons[i].name_group)){
+                    if (lesson.name_group.includes(props.lessonsGroup[i].name_group)){
                         result.push(lesson);
                     }
                     else {
-                        lesson.name_group = lesson.name_group + "," + props.lessons[i].name_group;
+                        lesson.name_group = lesson.name_group + "," + props.lessonsGroup[i].name_group;
                         result.push(lesson);
                     }
                 }
                 else {
-                    result.push(props.lessons[i]);
+                    result.push(props.lessonsGroup[i]);
                 }
-
             }
         }
+
+        for (let i= 0; i < props.lessonsStream.length; i++){
+            if (props.lessonsStream[i].dayofweek-1 === day && props.lessonsStream[i].num_lesson === num_l)
+            {
+                if(result.some(o => o.id_lesson === props.lessonsStream[i].id_lesson)){
+                    const lesson = result.find(lesson => lesson.id_lesson === props.lessonsStream[i].id_lesson)
+                    result.pop();
+                    if (lesson.name_group.includes(props.lessonsStream[i].name_group)){
+                        result.push(lesson);
+                    }
+                    else {
+                        lesson.name_group = lesson.name_group + "," + props.lessonsStream[i].name_group;
+                        result.push(lesson);
+                    }
+                }
+                else {
+                    result.push(props.lessonsStream[i]);
+                }
+            }
+        }
+
         return result;
     }
     return (

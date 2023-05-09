@@ -33,7 +33,11 @@ const LessonCellSem = (props) => {
             <div className={getColor()}>
                 <div>{props.lesson.name_subject}</div>
                 <div>{props.lesson.name_professor}</div>
-                <div>{props.lesson.name_group}</div>
+                {props.lesson.name_stream ? (
+                    <div>{props.lesson.name_stream}</div>
+                ) : (
+                    <div>{props.lesson.name_group}</div>
+                )}
             </div>
         </div>
     );

@@ -39,25 +39,46 @@ const ScheduleTable = (props) => {
 
     function cell_info(day, num_l){
         let result = [];
-        for (let i= 0; i < props.lessons.length; i++){
-            if (props.lessons[i].dayofweek-1 === day && props.lessons[i].num_lesson === num_l)
+        for (let i= 0; i < props.lessonsGroup.length; i++){
+            if (props.lessonsGroup[i].dayofweek-1 === day && props.lessonsGroup[i].num_lesson === num_l)
             {
-                if(result.some(o => o.id_lesson === props.lessons[i].id_lesson)){
-                    const lesson = result.find(lesson => lesson.id_lesson === props.lessons[i].id_lesson)
+                if(result.some(o => o.id_lesson === props.lessonsGroup[i].id_lesson)){
+                    const lesson = result.find(lesson => lesson.id_lesson === props.lessonsGroup[i].id_lesson)
                     result.pop();
-                    if (lesson.name_group.includes(props.lessons[i].name_group)){
+                    if (lesson.name_group.includes(props.lessonsGroup[i].name_group)){
                         result.push(lesson);
                     }
                     else {
-                        lesson.name_group = lesson.name_group + "," + props.lessons[i].name_group;
+                        lesson.name_group = lesson.name_group + "," + props.lessonsGroup[i].name_group;
                         result.push(lesson);
                     }
                 }
                 else {
-                    result.push(props.lessons[i]);
+                    result.push(props.lessonsGroup[i]);
                 }
             }
         }
+
+        for (let i= 0; i < props.lessonsStream.length; i++){
+            if (props.lessonsStream[i].dayofweek-1 === day && props.lessonsStream[i].num_lesson === num_l)
+            {
+                if(result.some(o => o.id_lesson === props.lessonsStream[i].id_lesson)){
+                    const lesson = result.find(lesson => lesson.id_lesson === props.lessonsStream[i].id_lesson)
+                    result.pop();
+                    if (lesson.name_group.includes(props.lessonsStream[i].name_group)){
+                        result.push(lesson);
+                    }
+                    else {
+                        lesson.name_group = lesson.name_group + "," + props.lessonsStream[i].name_group;
+                        result.push(lesson);
+                    }
+                }
+                else {
+                    result.push(props.lessonsStream[i]);
+                }
+            }
+        }
+
         return result;
     }
     function cellTips(day, num_l) {
@@ -71,16 +92,26 @@ const ScheduleTable = (props) => {
                 professorIcon = true;
             }
         }
+        for (let i= 0; i < props.professorUnavailableIcons.length; i++){
+            if (props.professorUnavailableIcons[i].dayofweek-1 === day && props.professorUnavailableIcons[i].num_lesson === num_l) {
+                professorIcon = true;
+            }
+        }
         for (let i= 0; i < props.groupIcons.length; i++){
             if (props.groupIcons[i].dayofweek-1 === day && props.groupIcons[i].num_lesson === num_l) {
                 groupIcon = true;
             }
         }
-            for (let i= 0; i < props.studentsIcons.length; i++){
-                if (props.studentsIcons[i].dayofweek-1 === day && props.studentsIcons[i].num_lesson === num_l) {
-                    studentsIcon = true;
-                }
+        for (let i= 0; i < props.studentsIcons.length; i++){
+            if (props.studentsIcons[i].dayofweek-1 === day && props.studentsIcons[i].num_lesson === num_l) {
+                studentsIcon = true;
             }
+        }
+        for (let i= 0; i < props.studentsUnavailableIcons.length; i++){
+            if (props.studentsUnavailableIcons[i].dayofweek-1 === day && props.studentsUnavailableIcons[i].num_lesson === num_l) {
+                studentsIcon = true;
+            }
+        }
         for (let i= 0; i < props.roomsIcons.length; i++){
             if (props.roomsIcons[i].dayofweek-1 === day && props.roomsIcons[i].num_lesson === num_l) {
                 roomIcon = true;
@@ -444,7 +475,11 @@ const ScheduleTable = (props) => {
                     <div>{props.selectedLesson.name_subject}</div>
                     <div>{props.selectedLesson.name_professor}</div>
                     <div>{props.selectedLesson.num_room},{props.selectedLesson.address}</div>
-                    <div>{props.selectedLesson.name_group}</div>
+                    {props.selectedLesson.name_stream ? (
+                        <div>{props.selectedLesson.name_stream}</div>
+                    ) : (
+                        <div>{props.selectedLesson.name_group}</div>
+                    )}
                     <Button onClick={() => handleChangeLessonButtonClick()}>Изменить</Button>
                     <Button onClick={() => handleMoveLessonButtonClick()}>Перенести</Button>
                 </div>

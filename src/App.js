@@ -10,7 +10,7 @@ import ScheduleTable from "./Components/Schedule Table/scheduleTable";
 import Compare from "./Components/Pages/Compare/Compare";
 import RoomsAvailable from "./Components/Pages/Rooms Available/RoomsAvailable";
 import ProfessorsAvailable from "./Components/Pages/Professors Available/ProfessorsAvailable";
-import GroupsAvailable from "./Components/Pages/Groups Available/GroupsAvailable";
+import StreamsAvailable from "./Components/Pages/Streams Available/StreamsAvailable";
 import StudentsAvailable from "./Components/Pages/Students Available/StudentsAvailable";
 
 function App() {
@@ -81,7 +81,7 @@ function App() {
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/groups">Занятость групп/потоков</Link></div>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/students">Занятость студентов</Link></div>
                     </div>}/>}></Route>
-                    <Route exact path='/groups' element={<GroupsAvailable semester={semester} version={version} menu={<div className={classes.menu}>
+                    <Route exact path='/groups' element={<StreamsAvailable semester={semester} version={version} menu={<div className={classes.menu}>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/edit">Внести изменения</Link></div>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/tree">Дерево версий</Link></div>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/compare">Сравнение версий</Link></div>

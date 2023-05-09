@@ -12,7 +12,8 @@ import ScheduleTable from "../../Schedule Table/scheduleTable";
 const Edit = (props) => {
     const firstMonday= props.firstM.first_monday;
     const [monday,SetMonday] = useState('');
-    const [lessons,SetLessons] = useState([]);
+    const [lessonsGroup,SetLessonsGroup] = useState([]);
+    const [lessonsStream,SetLessonsStream] = useState([]);
 
     const SemMode = [{value:false, name:"Неделя"},{value:true, name:"Семестр"}];
     const CreateMode = [{value:false, name:"Изменение"},{value:true, name:"Создание"}];
@@ -39,8 +40,10 @@ const Edit = (props) => {
 
     const [tips,SetTips] = useState([]);
     const [professorIcons,SetProfessorIcons] = useState([]);
+    const [professorUnavailableIcons,SetProfessorUnavailableIcons] = useState([]);
     const [groupIcons,SetGroupIcons] = useState([]);
     const [studentsIcons,SetStudentsIcons] = useState([]);
+    const [studentsUnavailableIcons,SetStudentsUnavailableIcons] = useState([]);
     const [roomsIcons,SetRoomsIcons] = useState([]);
 
     useEffect(get_filters_info,[]);
@@ -48,6 +51,15 @@ const Edit = (props) => {
         let xhr = new XMLHttpRequest();
         xhr.open("POST","https://sql.lavro.ru/call.php");
         let fd = new FormData();
+        console.log(props.version.id_version);
+        console.log(getStringBuilding(filterBuildings).toString());
+        console.log(getStringSubject(filterSubjects).toString());
+        console.log(getStringProfessor(filterProfessors).toString());
+        console.log(getStringGroupNStream(filterGroupsNStreams).toString());
+        console.log(getStringRooms(filterRooms).toString());
+        console.log(getStringStudents(filterStudents).toString());
+        console.log(monday);
+        console.log(firstMonday);
         fd.append("pname","show_lesson");
         fd.append("db","284192");
         fd.append("p1",props.version.id_version);
@@ -67,13 +79,15 @@ const Edit = (props) => {
     function show_lesson_temp(e){
         if (e.target.status === 200){
             let resp = JSON.parse(e.target.response);
-            console.log(resp.RESULTS);
+            console.log(resp);
             if(!resp.RESULTS){
                 alert("Произошла ошибка при обращении к базе данных");
             }
             else{
                 if(resp.RESULTS[0].length === 0){
-                    alert("Занятий нет!");
+                    if(resp.RESULTS[1].length === 0){
+                        alert("Занятий нет!");
+                    }
                 }
                 else {
                     if(resp.RESULTS[0][0].error){
@@ -82,7 +96,8 @@ const Edit = (props) => {
                         }
                     }
                 }
-                SetLessons(resp.RESULTS[0]);
+                SetLessonsGroup(resp.RESULTS[0]);
+                SetLessonsStream(resp.RESULTS[1]);
             }
         }
         else {
@@ -215,9 +230,11 @@ const Edit = (props) => {
             }
             else{
                 SetTips(resp.RESULTS);
-                SetProfessorIcons(resp.RESULTS[0], resp.RESULTS[1]);
+                SetProfessorIcons(resp.RESULTS[0]);
+                SetProfessorUnavailableIcons(resp.RESULTS[1]);
                 SetGroupIcons(resp.RESULTS[2]);
                 SetStudentsIcons(resp.RESULTS[3]);
+                SetStudentsUnavailableIcons(resp.RESULTS[4]);
                 SetRoomsIcons(resp.RESULTS[5]);
 
             }
@@ -244,7 +261,7 @@ const Edit = (props) => {
 
     function selectMode(value){
         setIsSemMode(value);
-        SetLessons([]);
+        SetLessonsGroup([]);
     }
 
     function clearFilters(){
@@ -292,10 +309,10 @@ const Edit = (props) => {
                         </div>
                     </div>
                     {isSemMode ? (
-                        <ScheduleTableSem lessons={lessons}/>
+                        <ScheduleTableSem lessonsGroup={lessonsGroup} lessonsStream={lessonsStream}/>
                     ) : (
-                        <ScheduleTable version={props.version} firstMonday={firstMonday} lessons={lessons} isCreateMode={isCreateMode} monday={monday} subjects={subjects} professors={professors} groupsNStreams={groupsNStreams} rooms={rooms}
-                                       show_tips={show_tips} selectedLesson={selectedLesson}  setSelectedLesson={SetSelectedLesson} professorIcons={professorIcons} groupIcons={groupIcons} studentsIcons={studentsIcons} roomsIcons={roomsIcons}/>
+                        <ScheduleTable version={props.version} firstMonday={firstMonday} lessonsGroup={lessonsGroup} lessonsStream={lessonsStream} isCreateMode={isCreateMode} monday={monday} subjects={subjects} professors={professors} groupsNStreams={groupsNStreams} rooms={rooms}
+                                       show_tips={show_tips} selectedLesson={selectedLesson}  setSelectedLesson={SetSelectedLesson} professorIcons={professorIcons} professorUnavailableIcons={professorUnavailableIcons} groupIcons={groupIcons} studentsIcons={studentsIcons} studentsUnavailableIcons={studentsUnavailableIcons} roomsIcons={roomsIcons}/>
                     )}
                     <div className={classes.weekSwitch}>
                         <div className={classes.divs}>

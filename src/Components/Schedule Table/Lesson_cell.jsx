@@ -1,10 +1,12 @@
 import React, {useState} from 'react';
 import classes from "./Lesson_cell.module.css";
+import ScheduleTableSem from "./scheduleTableSem";
+import ScheduleTable from "./scheduleTable";
 const LessonCell = (props) => {
     let lessonColor = classes;
 
     function getColor(){
-        if(props.selected){//=== props.lesson.id_lesson
+        if(props.selected === props.lesson){
             lessonColor = classes.selected;
         }
         else {
@@ -26,7 +28,12 @@ const LessonCell = (props) => {
             <div className={getColor()}>
                 <div>{props.lesson.name_subject}</div>
                 <div>{props.lesson.name_professor}</div>
-                <div>{props.lesson.name_group}</div>
+                {props.lesson.name_stream ? (
+                    <div>{props.lesson.name_stream}</div>
+                ) : (
+                    <div>{props.lesson.name_group}</div>
+                )}
+
             </div>
         </div>
     );
