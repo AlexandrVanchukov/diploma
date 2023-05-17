@@ -9,6 +9,9 @@ const LessonCell = (props) => {
         if(props.selected === props.lesson){
             lessonColor = classes.selected;
         }
+        else if(props.hasCollusion()){
+            lessonColor = classes.collusion;
+        }
         else {
             if (props.lesson.type === "Лекция")
                 lessonColor = classes.green;
@@ -26,6 +29,7 @@ const LessonCell = (props) => {
             props.onClick(props.lesson)
         }}>
             <div className={getColor()}>
+                {props.hasCollusion}
                 <div>{props.lesson.name_subject}</div>
                 <div>{props.lesson.name_professor}</div>
                 {props.lesson.name_stream ? (

@@ -8,6 +8,9 @@
     border-radius: 10px;
     z-index: 1;
 }
+.collusion{
+    background-color: #FF00002E;
+}
 
 .yellow, .green, .orange, .selected{
     border-left:5px solid #ffffff;

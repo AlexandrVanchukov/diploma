@@ -56,7 +56,6 @@ const RoomsTable = (props) => {
             }
         return result;
     }
-    console.log(cell_info(1,1,1))
 
     return (
         <div>

@@ -3,7 +3,6 @@ import classes from "../Edit/Edit.module.css";
 import {MultiSelect} from "primereact/multiselect";
 import Button from "../../UI/Button/Button";
 import {Dropdown} from "primereact/dropdown";
-import WeekSwitch from "../../UI/WeekSwitch/WeekSwitch";
 import RoomsTable from "../../Schedule Table/Rooms Table/RoomsTable";
 
 const RoomsAvailable = (props) => {

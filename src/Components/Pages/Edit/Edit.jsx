@@ -51,15 +51,6 @@ const Edit = (props) => {
         let xhr = new XMLHttpRequest();
         xhr.open("POST","https://sql.lavro.ru/call.php");
         let fd = new FormData();
-        console.log(props.version.id_version);
-        console.log(getStringBuilding(filterBuildings).toString());
-        console.log(getStringSubject(filterSubjects).toString());
-        console.log(getStringProfessor(filterProfessors).toString());
-        console.log(getStringGroupNStream(filterGroupsNStreams).toString());
-        console.log(getStringRooms(filterRooms).toString());
-        console.log(getStringStudents(filterStudents).toString());
-        console.log(monday);
-        console.log(firstMonday);
         fd.append("pname","show_lesson");
         fd.append("db","284192");
         fd.append("p1",props.version.id_version);

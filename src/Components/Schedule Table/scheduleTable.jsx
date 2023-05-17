@@ -238,18 +238,29 @@ const ScheduleTable = (props) => {
         let xhr = new XMLHttpRequest();
         xhr.open("POST","https://sql.lavro.ru/call.php");
         let fd = new FormData();
+        console.log(selectedInter(selectedInterval));
         fd.append("pname","edit_lesson");
         fd.append("db","284192");
         fd.append("p1",props.version.id_version);
         fd.append("p2",props.selectedLesson.id_lesson);
         fd.append("p3",selectedRooms.id_cluster.toString());
         fd.append("p4",selectedProfessors.isu_id_professor.toString());
-        fd.append("p5",selectedInterval.toString());
+        fd.append("p5",selectedInter(selectedInterval));
         fd.append("p6",quantity);
         fd.append("p7",getStringGroupNStream(selectedGroupsNStreams).toString());
         fd.append("format","rows");
         xhr.onload = edit_lesson_temp;
         xhr.send(fd);
+    }
+
+    function selectedInter(i){
+        if (i === null){
+            return "NULL";
+        }
+        else {
+            return i.toString();
+        }
+
     }
 
     function edit_lesson_temp(e){
@@ -305,10 +316,6 @@ const ScheduleTable = (props) => {
         SetSelectedInterval(props.selectedLesson.inter);
         setQuantity(props.selectedLesson.quantity);
         setModalEditLesson(true);
-        console.log(selectedRooms);
-        console.log(selectedProfessors);
-        console.log(selectedInterval);
-        console.log(quantity);
     };
     const handleMoveLessonButtonClick = () => {
         setIsModeTips(true);
