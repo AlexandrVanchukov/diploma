@@ -8,6 +8,7 @@ import WeekSwitch from "../../UI/WeekSwitch/WeekSwitch";
 import {SelectButton} from "primereact/selectbutton";
 import ScheduleTableSem from "../../Schedule Table/scheduleTableSem";
 import ScheduleTable from "../../Schedule Table/scheduleTable";
+import TableSem from "../../Schedule Table/Sem Table/TableSem";
 
 const Edit = (props) => {
     const firstMonday= props.firstM.first_monday;
@@ -263,6 +264,18 @@ const Edit = (props) => {
         SetFilterRooms([]);
         SetFilterBuildings([]);
     }
+    const getSemTable = () => {
+        if (whichWeeksMode === 0){
+            return <ScheduleTableSem lessonsGroup={lessonsGroup} lessonsStream={lessonsStream}/>;
+        }
+        else if (whichWeeksMode === 1){
+            return <TableSem lessonsGroup={lessonsGroup} lessonsStream={lessonsStream} evenOrOdd={1}/>;
+        }
+        else {
+            return <TableSem lessonsGroup={lessonsGroup} lessonsStream={lessonsStream} evenOrOdd={0}/>;
+        }
+        return null;
+    };
 
     return (
         <div>
@@ -300,7 +313,7 @@ const Edit = (props) => {
                         </div>
                     </div>
                     {isSemMode ? (
-                        <ScheduleTableSem lessonsGroup={lessonsGroup} lessonsStream={lessonsStream}/>
+                        getSemTable()
                     ) : (
                         <ScheduleTable version={props.version} firstMonday={firstMonday} lessonsGroup={lessonsGroup} lessonsStream={lessonsStream} isCreateMode={isCreateMode} monday={monday} subjects={subjects} professors={professors} groupsNStreams={groupsNStreams} rooms={rooms}
                                        show_tips={show_tips} selectedLesson={selectedLesson}  setSelectedLesson={SetSelectedLesson} professorIcons={professorIcons} professorUnavailableIcons={professorUnavailableIcons} groupIcons={groupIcons} studentsIcons={studentsIcons} studentsUnavailableIcons={studentsUnavailableIcons} roomsIcons={roomsIcons}/>

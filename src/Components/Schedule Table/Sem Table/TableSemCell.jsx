@@ -1,6 +1,7 @@
 import React from 'react';
-import classes from './Lesson_cell_sem.module.css';
-const LessonCellSem = (props) => {
+import classes from "./TableSemCell.module.css";
+
+const TableSemCell = (props) => {
     let lessonColor = classes;
     function getColor(){
         if (props.lesson.type === "Лекция")
@@ -12,24 +13,19 @@ const LessonCellSem = (props) => {
         return lessonColor;
     }
 
-    let lessonWidth = classes;
+    let lessonWidth = "none";
     function getSide(){
         if(props.lesson.inter === 7){
-            lessonWidth = classes.full;
+            lessonWidth = "7";
         }
-        else if(props.lesson.inter === 14){
-            if(props.lesson.firstWeek%2===0){
-                lessonWidth = classes.even;
-            }
-            else {
-                lessonWidth = classes.odd;
-            }
+        else {
+            lessonWidth = "14";
         }
         return lessonWidth;
     }
 
     return (
-        <div className={getSide()}>
+        <div style={{width:"100%"}}>
             <div className={getColor()}>
                 <div>
                     <span>{props.lesson.name_subject}</span>
@@ -37,9 +33,9 @@ const LessonCellSem = (props) => {
                 </div>
                 <div>{props.lesson.name_professor}</div>
                 {props.lesson.name_stream ? (
-                    <div>{props.lesson.name_stream}</div>
+                    <div>{props.lesson.name_stream} <span style={{float:"right", color:"rgba(0,0,0,0.4)"}}>inter:{getSide()}</span></div>
                 ) : (
-                    <div>{props.lesson.name_group}</div>
+                    <div>{props.lesson.name_group} <span style={{float:"right", color:"rgba(0,0,0,0.4)"}}>inter:{getSide()}</span></div>
                 )}
                 <div></div>
             </div>
@@ -47,4 +43,4 @@ const LessonCellSem = (props) => {
     );
 };
 
-export default LessonCellSem;
+export default TableSemCell;

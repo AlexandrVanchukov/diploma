@@ -7,7 +7,7 @@ const ScheduleTableSem = (props) => {
     function cell_info(day, num_l){
         let result = [];
         for (let i= 0; i < props.lessonsGroup.length; i++){
-            if (props.lessonsGroup[i].dayofweek-1 === day && props.lessonsGroup[i].num_lesson === num_l)
+            if (props.lessonsGroup[i].dayofweek-1 === day && props.lessonsGroup[i].num_lesson === num_l )
             {
                 if(result.some(o => o.id_lesson === props.lessonsGroup[i].id_lesson)){
                     const lesson = result.find(lesson => lesson.id_lesson === props.lessonsGroup[i].id_lesson)
