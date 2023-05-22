@@ -1,14 +1,18 @@
 {
   "files": {
-    "main.css": "/diploma/static/css/main.db28a786.css",
-    "main.js": "/diploma/static/js/main.307905e9.js",
+    "main.css": "/diploma/static/css/main.dfa5dfcc.css",
+    "main.js": "/diploma/static/js/main.8b6dfca8.js",
     "static/media/color.png": "/diploma/static/media/color.6441e63a57ccc5105bad.png",
+    "static/media/student.svg": "/diploma/static/media/student.7aa8d23969663cad9ba79f06b47c60dc.svg",
+    "static/media/group.svg": "/diploma/static/media/group.781ddf8b70bb3cca42787410109bc077.svg",
+    "static/media/room.svg": "/diploma/static/media/room.5d743183d90d65f1c9df39ecbd1a16c3.svg",
+    "static/media/professor.svg": "/diploma/static/media/professor.31787ceafb404916c58e4128fb33deb8.svg",
     "index.html": "/diploma/index.html",
-    "main.db28a786.css.map": "/diploma/static/css/main.db28a786.css.map",
-    "main.307905e9.js.map": "/diploma/static/js/main.307905e9.js.map"
+    "main.dfa5dfcc.css.map": "/diploma/static/css/main.dfa5dfcc.css.map",
+    "main.8b6dfca8.js.map": "/diploma/static/js/main.8b6dfca8.js.map"
   },
   "entrypoints": [
-    "static/css/main.db28a786.css",
-    "static/js/main.307905e9.js"
+    "static/css/main.dfa5dfcc.css",
+    "static/js/main.8b6dfca8.js"
   ]
 }
