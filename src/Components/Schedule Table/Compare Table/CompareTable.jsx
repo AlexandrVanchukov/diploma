@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import classes from "../ScheduleTable.module.css";
-import TdTable from "../TdTable";
 import {MultiSelect} from "primereact/multiselect";
 import Button from "../../UI/Button/Button";
 import WeekSwitch from "../../UI/WeekSwitch/WeekSwitch";
 import LessonCell from "../Lesson_cell";
 import {Dropdown} from "primereact/dropdown";
+import CompareCell from "./CompareCell";
 
 const CompareTable = (props) => {
 
@@ -192,6 +192,70 @@ const CompareTable = (props) => {
     function pickVersion(value){
         setWhichVersion(value);
     }
+    function hasDuplicateFields(array, fieldName) {
+        const encounteredFields = {};
+        const nameCounts = {};
+        if (array[0][fieldName]){
+            if(fieldName === "name_group" || fieldName === "name_stream"){
+                for (let i = 0; i < array.length; i++) {
+                    const element = array[i];
+                    const field = element[fieldName];
+
+                    if (typeof field === 'string') {
+                        const names = field.split(',');
+
+                        for (const name of names) {
+                            if (nameCounts[name]) {
+                                return true; // Return true immediately if repetition is found
+                            } else {
+                                nameCounts[name] = 1;
+                            }
+                        }
+                    }
+                }
+
+                return false;
+            }
+            else{
+                for (let i = 0; i < array.length; i++) {
+                    const element = array[i];
+                    const field = element[fieldName];
+
+                    if (encounteredFields[field]) {
+                        return true; // Found a duplicate field
+                    } else {
+                        encounteredFields[field] = true; // Mark field as encountered
+                    }
+                }
+            }
+        }
+        else {
+            return false
+        }
+        return false; // No duplicate fields found
+    }
+
+    function hasCollusion(day,num_l){
+        if (hasDuplicateFields(cell_info(day,num_l),"isu_id_professor")){
+            console.log("collusion pro");
+            return true;
+        }
+        else if(hasDuplicateFields(cell_info(day,num_l),"name_group")){
+            console.log("collusion group");
+            return true;
+        }
+        else if(hasDuplicateFields(cell_info(day,num_l),"name_stream")){
+            console.log("collusion stream");
+            return true;
+        }
+        else if(hasDuplicateFields(cell_info(day,num_l),"num_room")){
+            console.log("collusion room");
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 
     return (
         <div>
@@ -230,21 +294,21 @@ const CompareTable = (props) => {
                 <tbody>
                 <tr>
                     <td>8:20 - 9:50</td>
-                    <td>{cell_info(1,1).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(2,1).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(3,1).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(4,1).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(5,1).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(6,1).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
+                    <td>{cell_info(1,1).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={1} num_l={1}/>)}</td>
+                    <td>{cell_info(2,1).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={2} num_l={1}/>)}</td>
+                    <td>{cell_info(3,1).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={3} num_l={1}/>)}</td>
+                    <td>{cell_info(4,1).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={4} num_l={1}/>)}</td>
+                    <td>{cell_info(5,1).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={5} num_l={1}/>)}</td>
+                    <td>{cell_info(6,1).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={6} num_l={1}/>)}</td>
                 </tr>
                 <tr>
                     <td>10:00 - 11:30</td>
-                    <td>{cell_info(1,2).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(2,2).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(3,2).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(4,2).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(5,2).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(6,2).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
+                    <td>{cell_info(1,2).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={1} num_l={2}/>)}</td>
+                    <td>{cell_info(2,2).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={2} num_l={2}/>)}</td>
+                    <td>{cell_info(3,2).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={3} num_l={2}/>)}</td>
+                    <td>{cell_info(4,2).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={4} num_l={2}/>)}</td>
+                    <td>{cell_info(5,2).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={5} num_l={2}/>)}</td>
+                    <td>{cell_info(6,2).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={6} num_l={2}/>)}</td>
                     {/*<TdTable day={1} num_l={2} cell_info={cell_info}/>
                     <TdTable day={2} num_l={2} cell_info={cell_info}/>
                     <TdTable day={3} num_l={2} cell_info={cell_info}/>
@@ -254,12 +318,12 @@ const CompareTable = (props) => {
                 </tr>
                 <tr>
                     <td>11:40 - 13:10</td>
-                    <td>{cell_info(1,3).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(2,3).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(3,3).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(4,3).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(5,3).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(6,3).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
+                    <td>{cell_info(1,3).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={1} num_l={3}/>)}</td>
+                    <td>{cell_info(2,3).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={2} num_l={3}/>)}</td>
+                    <td>{cell_info(3,3).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={3} num_l={3}/>)}</td>
+                    <td>{cell_info(4,3).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={4} num_l={3}/>)}</td>
+                    <td>{cell_info(5,3).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={5} num_l={3}/>)}</td>
+                    <td>{cell_info(6,3).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={6} num_l={3}/>)}</td>
                     {/*<TdTable day={1} num_l={3} cell_info={cell_info}/>
                     <TdTable day={2} num_l={3} cell_info={cell_info}/>
                     <TdTable day={3} num_l={3} cell_info={cell_info}/>
@@ -269,12 +333,12 @@ const CompareTable = (props) => {
                 </tr>
                 <tr>
                     <td>13:30 - 15:00</td>
-                    <td>{cell_info(1,4).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(2,4).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(3,4).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(4,4).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(5,4).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(6,4).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
+                    <td>{cell_info(1,4).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={1} num_l={4}/>)}</td>
+                    <td>{cell_info(2,4).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={2} num_l={4}/>)}</td>
+                    <td>{cell_info(3,4).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={3} num_l={4}/>)}</td>
+                    <td>{cell_info(4,4).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={4} num_l={4}/>)}</td>
+                    <td>{cell_info(5,4).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={5} num_l={4}/>)}</td>
+                    <td>{cell_info(6,4).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={6} num_l={4}/>)}</td>
                     {/*<TdTable day={1} num_l={4} cell_info={cell_info}/>
                     <TdTable day={2} num_l={4} cell_info={cell_info}/>
                     <TdTable day={3} num_l={4} cell_info={cell_info}/>
@@ -285,12 +349,12 @@ const CompareTable = (props) => {
                 </tr>
                 <tr>
                     <td>15:20 - 16:50</td>
-                    <td>{cell_info(1,5).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(2,5).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(3,5).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(4,5).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(5,5).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(6,5).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
+                    <td>{cell_info(1,5).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={1} num_l={5}/>)}</td>
+                    <td>{cell_info(2,5).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={2} num_l={5}/>)}</td>
+                    <td>{cell_info(3,5).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={3} num_l={5}/>)}</td>
+                    <td>{cell_info(4,5).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={4} num_l={5}/>)}</td>
+                    <td>{cell_info(5,5).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={5} num_l={5}/>)}</td>
+                    <td>{cell_info(6,5).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={6} num_l={5}/>)}</td>
                     {/*<TdTable day={1} num_l={5} cell_info={cell_info}/>
                     <TdTable day={2} num_l={5} cell_info={cell_info}/>
                     <TdTable day={3} num_l={5} cell_info={cell_info}/>
@@ -300,12 +364,12 @@ const CompareTable = (props) => {
                 </tr>
                 <tr>
                     <td>17:00 - 18:30</td>
-                    <td>{cell_info(1,6).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(2,6).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(3,6).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(4,6).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(5,6).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(6,6).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
+                    <td>{cell_info(1,6).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={1} num_l={6}/>)}</td>
+                    <td>{cell_info(2,6).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={2} num_l={6}/>)}</td>
+                    <td>{cell_info(3,6).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={3} num_l={6}/>)}</td>
+                    <td>{cell_info(4,6).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={4} num_l={6}/>)}</td>
+                    <td>{cell_info(5,6).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={5} num_l={6}/>)}</td>
+                    <td>{cell_info(6,6).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={6} num_l={6}/>)}</td>
                     {/*<TdTable day={1} num_l={6} cell_info={cell_info}/>
                     <TdTable day={2} num_l={6} cell_info={cell_info}/>
                     <TdTable day={3} num_l={6} cell_info={cell_info}/>
@@ -316,12 +380,12 @@ const CompareTable = (props) => {
                 </tr>
                 <tr>
                     <td>18:40 - 20:10</td>
-                    <td>{cell_info(1,7).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(2,7).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(3,7).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(4,7).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(5,7).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(6,7).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
+                    <td>{cell_info(1,7).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={1} num_l={7}/>)}</td>
+                    <td>{cell_info(2,7).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={2} num_l={7}/>)}</td>
+                    <td>{cell_info(3,7).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={3} num_l={7}/>)}</td>
+                    <td>{cell_info(4,7).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={4} num_l={7}/>)}</td>
+                    <td>{cell_info(5,7).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={5} num_l={7}/>)}</td>
+                    <td>{cell_info(6,7).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={6} num_l={7}/>)}</td>
                     {/*<TdTable day={1} num_l={7} cell_info={cell_info}/>
                     <TdTable day={2} num_l={7} cell_info={cell_info}/>
                     <TdTable day={3} num_l={7} cell_info={cell_info}/>
@@ -331,12 +395,12 @@ const CompareTable = (props) => {
                 </tr>
                 <tr>
                     <td>20:20 - 21:50</td>
-                    <td>{cell_info(1,8).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(2,8).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(3,8).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(4,8).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(5,8).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
-                    <td>{cell_info(6,8).map((l,index) => <LessonCell lesson={l} key={index}/>)}</td>
+                    <td>{cell_info(1,8).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={1} num_l={8}/>)}</td>
+                    <td>{cell_info(2,8).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={2} num_l={8}/>)}</td>
+                    <td>{cell_info(3,8).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={3} num_l={8}/>)}</td>
+                    <td>{cell_info(4,8).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={4} num_l={8}/>)}</td>
+                    <td>{cell_info(5,8).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={5} num_l={8}/>)}</td>
+                    <td>{cell_info(6,8).map((l,index) => <CompareCell lesson={l} key={index} hasCollusion={hasCollusion} day={6} num_l={8}/>)}</td>
                     {/*<TdTable day={1} num_l={8} cell_info={cell_info}/>
                     <TdTable day={2} num_l={8} cell_info={cell_info}/>
                     <TdTable day={3} num_l={8} cell_info={cell_info}/>

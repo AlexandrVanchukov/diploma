@@ -37,7 +37,7 @@ const Edit = (props) => {
     const [filterStudents,SetFilterStudents] = useState([]);
     const [filterRooms,SetFilterRooms] = useState([]);
 
-    const [selectedLesson,SetSelectedLesson] = useState([]);
+    const [selectedLesson,SetSelectedLesson] = useState("");
 
     const [tips,SetTips] = useState([]);
     const [professorIcons,SetProfessorIcons] = useState([]);
@@ -216,11 +216,12 @@ const Edit = (props) => {
     function show_tips_temp(e){
         if (e.target.status === 200){
             let resp = JSON.parse(e.target.response);
-            console.log(resp.RESULTS);
+            console.log(resp.RESULTS[2]);
             if(!resp.RESULTS){
                 alert("Произошла ошибка при обращении к базе данных");
             }
             else{
+                console.log(resp.RESULTS)
                 SetTips(resp.RESULTS);
                 SetProfessorIcons(resp.RESULTS[0]);
                 SetProfessorUnavailableIcons(resp.RESULTS[1]);
@@ -248,6 +249,10 @@ const Edit = (props) => {
         }
         else {
             show_lesson();
+            if (selectedLesson !== ""){
+                console.log("Не выбран")
+                show_tips();
+            }
         }
     }
 
@@ -305,7 +310,7 @@ const Edit = (props) => {
                                 <Dropdown value={whichWeeksMode} onChange={(e) => setWhichWeeksMode(e.value)} options={WeeksMode} optionLabel="name"
                                           placeholder="Select a City" className="w-full md:w-14rem"/>
                             ) : (
-                                <WeekSwitch setM={setM} onClick={show_l}/>
+                                <WeekSwitch setM={setM} show_l={show_l}/>
                             )}
                         </div>
                         <div className={classes.divs}>

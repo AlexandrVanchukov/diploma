@@ -42,7 +42,7 @@ function App() {
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/compare">Сравнение версий</Link></div>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/rooms">Занятость аудиторий</Link></div>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/professors">Занятость преподавателей</Link></div>
-                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/groups">Занятость групп/потоков</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/groups">Занятость потоков</Link></div>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/students">Занятость студентов</Link></div>
                     </div>}/>}></Route>
                     <Route exact path='/tree' element={<TreeVersion semester={semester} version={version} setSem={setSem} setVer={setVer} menu={<div className={classes.menu}>
@@ -51,7 +51,7 @@ function App() {
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/compare">Сравнение версий</Link></div>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/rooms">Занятость аудиторий</Link></div>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/professors">Занятость преподавателей</Link></div>
-                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/groups">Занятость групп/потоков</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/groups">Занятость потоков</Link></div>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/students">Занятость студентов</Link></div>
                     </div>}/>}></Route>
                     <Route exact path='/compare' element={<Compare semester={semester} version={version} menu={<div className={classes.menu}>
@@ -60,7 +60,7 @@ function App() {
                         <div className={classes.menuItemSelected}><Link className={classes.menuLink} to="/compare">Сравнение версий</Link></div>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/rooms">Занятость аудиторий</Link></div>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/professors">Занятость преподавателей</Link></div>
-                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/groups">Занятость групп/потоков</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/groups">Занятость потоков</Link></div>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/students">Занятость студентов</Link></div>
                     </div>}/>}></Route>
                     <Route exact path='/rooms' element={<RoomsAvailable semester={semester} version={version} menu={<div className={classes.menu}>
@@ -69,7 +69,7 @@ function App() {
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/compare">Сравнение версий</Link></div>
                         <div className={classes.menuItemSelected}><Link className={classes.menuLink} to="/rooms">Занятость аудиторий</Link></div>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/professors">Занятость преподавателей</Link></div>
-                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/groups">Занятость групп/потоков</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/groups">Занятость потоков</Link></div>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/students">Занятость студентов</Link></div>
                     </div>}/>}></Route>
                     <Route exact path='/professors' element={<ProfessorsAvailable semester={semester} version={version} menu={<div className={classes.menu}>
@@ -78,7 +78,7 @@ function App() {
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/compare">Сравнение версий</Link></div>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/rooms">Занятость аудиторий</Link></div>
                         <div className={classes.menuItemSelected}><Link className={classes.menuLink} to="/professors">Занятость преподавателей</Link></div>
-                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/groups">Занятость групп/потоков</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/groups">Занятость потоков</Link></div>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/students">Занятость студентов</Link></div>
                     </div>}/>}></Route>
                     <Route exact path='/groups' element={<StreamsAvailable semester={semester} version={version} menu={<div className={classes.menu}>
@@ -87,7 +87,7 @@ function App() {
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/compare">Сравнение версий</Link></div>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/rooms">Занятость аудиторий</Link></div>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/professors">Занятость преподавателей</Link></div>
-                        <div className={classes.menuItemSelected}><Link className={classes.menuLink} to="/groups">Занятость групп/потоков</Link></div>
+                        <div className={classes.menuItemSelected}><Link className={classes.menuLink} to="/groups">Занятость потоков</Link></div>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/students">Занятость студентов</Link></div>
                     </div>}/>}></Route>
                     <Route exact path='/students' element={<StudentsAvailable semester={semester} version={version} menu={<div className={classes.menu}>
@@ -96,7 +96,7 @@ function App() {
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/compare">Сравнение версий</Link></div>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/rooms">Занятость аудиторий</Link></div>
                         <div className={classes.menuItem}><Link className={classes.menuLink} to="/professors">Занятость преподавателей</Link></div>
-                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/groups">Занятость групп/потоков</Link></div>
+                        <div className={classes.menuItem}><Link className={classes.menuLink} to="/groups">Занятость потоков</Link></div>
                         <div className={classes.menuItemSelected}><Link className={classes.menuLink} to="/students">Занятость студентов</Link></div>
                     </div>}/>}></Route>
                 </Routes>

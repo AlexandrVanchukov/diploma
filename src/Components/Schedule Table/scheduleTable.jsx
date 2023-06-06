@@ -97,6 +97,7 @@ const ScheduleTable = (props) => {
                 professorIcon = true;
             }
         }
+        console.log(props);
         for (let i= 0; i < props.groupIcons.length; i++){
             if (props.groupIcons[i].dayofweek-1 === day && props.groupIcons[i].num_lesson === num_l) {
                 groupIcon = true;
@@ -332,21 +333,21 @@ const ScheduleTable = (props) => {
     const handleCancelMoveLessonButton = () => {
         setModalMoveLesson(false);
         setIsModeTips(false);
-        props.setSelectedLesson([]);
+        props.setSelectedLesson("");
     };
     const handleAcceptMoveLessonButton = () => {
         setModalMoveLesson(false);
         setIsModeTips(false);
-        props.setSelectedLesson([]);
+        props.setSelectedLesson("");
         move_lesson();
     };
     const handleCancelEditLessonButton = () => {
         setModalEditLesson(false);
-        props.setSelectedLesson([]);
+        props.setSelectedLesson("");
     };
     const handleAcceptEditLessonButton = () => {
         setModalEditLesson(false);
-        props.setSelectedLesson([]);
+        props.setSelectedLesson("");
         edit_lesson();
     };
 

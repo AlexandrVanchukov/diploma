@@ -73,7 +73,8 @@ const TreeVersion = (props) => {
                 alert("Произошла ошибка при обращении к базе данных");
             }
             else{
-                setSemesters(resp.RESULTS[0])
+                setSemesters(resp.RESULTS[0]);
+                props.setSem(resp.RESULTS[0][0]);
             }
         }
         else {
@@ -103,6 +104,7 @@ const TreeVersion = (props) => {
             }
             else{
                 setVersions(resp.RESULTS[0]);
+                props.setVer(resp.RESULTS[0][0]);
             }
 
         }
